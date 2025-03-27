@@ -1,0 +1,559 @@
+ SystemMessage 
+You are an AI agent designed to automate browser tasks. Your goal is to accomplish the ultimate task following the rules.
+
+# Input Format
+Task
+Previous steps
+Current URL
+Open Tabs
+Interactive Elements
+[index]<type>text</type>
+- index: Numeric identifier for interaction
+- type: HTML element type (button, input, etc.)
+- text: Element description
+Example:
+[33]<button>Submit Form</button>
+
+- Only elements with numeric indexes in [] are interactive
+- elements without [] provide only context
+
+# Response Rules
+1. RESPONSE FORMAT: You must ALWAYS respond with valid JSON in this exact format:
+{"current_state": {"evaluation_previous_goal": "Success|Failed|Unknown - Analyze the current elements and the image to check if the previous goals/actions are successful like intended by the task. Mention if something unexpected happened. Shortly state why/why not",
+"memory": "Description of what has been done and what you need to remember. Be very specific. Count here ALWAYS how many times you have done something and how many remain. E.g. 0 out of 10 websites analyzed. Continue with abc and xyz",
+"next_goal": "What needs to be done with the next immediate action"},
+"action":[{"one_action_name": {// action-specific parameter}}, // ... more actions in sequence]}
+
+2. ACTIONS: You can specify multiple actions in the list to be executed in sequence. But always specify only one action name per item. Use maximum {max_actions} actions per sequence.
+Common action sequences:
+- Form filling: [{"input_text": {"index": 1, "text": "username"}}, {"input_text": {"index": 2, "text": "password"}}, {"click_element": {"index": 3}}]
+- Navigation and extraction: [{"go_to_url": {"url": "https://example.com"}}, {"extract_content": {"goal": "extract the names"}}]
+- Actions are executed in the given order
+- If the page changes after an action, the sequence is interrupted and you get the new state.
+- Only provide the action sequence until an action which changes the page state significantly.
+- Try to be efficient, e.g. fill forms at once, or chain actions where nothing changes on the page
+- only use multiple actions if it makes sense.
+
+3. ELEMENT INTERACTION:
+- Only use indexes of the interactive elements
+- Elements marked with "[]Non-interactive text" are non-interactive
+
+4. NAVIGATION & ERROR HANDLING:
+- If no suitable elements exist, use other functions to complete the task
+- If stuck, try alternative approaches - like going back to a previous page, new search, new tab etc.
+- Handle popups/cookies by accepting or closing them
+- Use scroll to find elements you are looking for
+- If you want to research something, open a new tab instead of using the current tab
+- If captcha pops up, try to solve it - else try a different approach
+- If the page is not fully loaded, use wait action
+
+5. TASK COMPLETION:
+- Use the done action as the last action as soon as the ultimate task is complete
+- Dont use "done" before you are done with everything the user asked you, except you reach the last step of max_steps. 
+- If you reach your last step, use the done action even if the task is not fully finished. Provide all the information you have gathered so far. If the ultimate task is completly finished set success to true. If not everything the user asked for is completed set success in done to false!
+- If you have to do something repeatedly for example the task says for "each", or "for all", or "x times", count always inside "memory" how many times you have done it and how many remain. Don't stop until you have completed like the task asked you. Only call done after the last step.
+- Don't hallucinate actions
+- Make sure you include everything you found out for the ultimate task in the done text parameter. Do not just say you are done, but include the requested information of the task. 
+
+6. VISUAL CONTEXT:
+- When an image is provided, use it to understand the page layout
+- Bounding boxes with labels on their top right corner correspond to element indexes
+
+7. Form filling:
+- If you fill an input field and your action sequence is interrupted, most often something changed e.g. suggestions popped up under the field.
+
+8. Long tasks:
+- Keep track of the status and subresults in the memory. 
+
+9. Extraction:
+- If your task is to find information - call extract_content on the specific pages to get and store the information.
+Your responses must be always JSON with the specified format.
+
+ HumanMessage 
+Your ultimate task is: """
+                Note: The user has uploaded a screenshot of the LinkedIn interface to help you understand the UI.
+                Use your knowledge of LinkedIn's interface to navigate the site based on the provided instructions.
+                Pay special attention to the structure of posts, the comment sections, and interactive elements.
+                
+
+Go to https://www.linkedin.com/feed/ and comment on posts after reading them, and insert a comment based on their paragraph content, ignore links and hash tag eg #school. After posting a comment, to find more posts scrolling down, comment on 10 posts. My account email: contact@chebonkelvin.com password: @?Kelvin11468 on linkedin user interface i have attached sample post on image. 
+
+Task: Read and comment on LinkedIn posts
+
+1. Navigate to LinkedIn feed: https://www.linkedin.com/feed/
+
+2. For each post:
+   - Look for the post content (paragraph text)
+   - Click "...more" if available to read the full content
+   - Ignore hashtags and links when formulating your comment
+   - Write a relevant comment based on the post's text content
+   - Click the "Comment" button to submit
+
+3. Comment process:
+   - Find the comment section (look for [icon-text(comment)])
+   - Click to expand the comment area
+   - Type your comment in the input field with placeholder "Add a comment"
+   - Click the "Comment" button that appears
+
+4. Continue scrolling to find more posts
+   - Comment on a total of 10 posts
+   - Comment on two posts then refresh, then another 2 post till 10 posts
+   - Skip cards that are recommendations (profile suggestions)
+
+5. How to identify posts:
+   - Posts have reaction options at the bottom ([icon-text(like)]-[icon-text(comment)])
+   - Posts typically have paragraphs of text (1-3 lines)
+   - Posts may include media (images/videos)
+   - Some posts may be reposts (showing two profile details)
+
+6. When commenting:
+   - Be relevant to the post content
+   - comments should not be more than 60 words
+   - If it's a repost, you can address either the original content or both
+   - Keep comments thoughtful and professional
+
+
+""". If you achieved your ultimate task, stop everything and use the done action in the next step to complete the task. If not, continue as usual.
+
+ HumanMessage 
+Example output:
+
+ AIMessage 
+
+
+ ToolMessage 
+Browser started
+
+ HumanMessage 
+[Your task history memory starts here]
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🔗  Navigated to https://www.linkedin.com/feed/
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input contact@chebonkelvin.com into index 2
+
+ HumanMessage 
+Action result: ⌨️  Input @?Kelvin11468 into index 3
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input contact@chebonkelvin.com into index 2
+
+ HumanMessage 
+Action result: ⌨️  Input @?Kelvin11468 into index 3
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 46: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input This is a fantastic initiative to help young leaders transform their potential into meaningful impact. Having dedicated speakers like Gift Ifokwe and Chioma Emmanuel will provide valuable insights for personal development. Looking forward to the positive outcomes from this session! into index 54
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 58: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 97: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input What a beautiful way to combine entrepreneurship with spiritual purpose! The Evening of Yoruba Hymns is not just an event, but a meaningful bridge between business and faith. Supporting missionary work through such initiatives shows how different paths can lead to the same goal of serving. into index 50
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input What a beautiful way to combine entrepreneurship with spiritual purpose! The Evening of Yoruba Hymns is not just an event, but a meaningful bridge between business and faith. Supporting missionary work through such initiatives shows how different paths can lead to the same goal of serving. into index 50
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 74: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input Your insights on premortem analysis and the balance between AI adoption and human leadership are particularly valuable. The point about transformation leadership being about managing change at a tolerable rate really resonates. Thank you for sharing these practical leadership lessons! into index 55
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 59: Comment
+
+ HumanMessage 
+Action result: 🕒  Waiting for 3 seconds
+
+ HumanMessage 
+Action result: 🔍  Scrolled down the page by one page
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 69: Comment
+
+ HumanMessage 
+Action result: Something new appeared after action 1 / 2
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input Your journey perfectly illustrates how authenticity and strategic thinking can create meaningful change. The way you've combined personal experience with organizational strategy is inspiring. Thank you for showing that vulnerability and leadership go hand in hand. into index 37
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 41: Comment
+
+ HumanMessage 
+Action result: 🕒  Waiting for 3 seconds
+
+ HumanMessage 
+Action result: 🔗  Navigated to https://www.linkedin.com/feed/
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 51: Comment
+
+ HumanMessage 
+[Task history memory ends]
+[Current state starts here]
+The following is one-time information - if you need to remember it write it to memory:
+Current url: https://www.linkedin.com/feed/
+Available tabs:
+[TabInfo(page_id=0, url='https://www.linkedin.com/feed/', title='(21) Feed | LinkedIn')]
+Interactive elements from top layer of the current page inside the viewport:
+... 719 pixels above - scroll or extract content to see more ...
+[0]<a />
+[1]<input combobox;false;text;Search/>
+[2]<a Home/>
+[3]<a 1
+1 new network update notification
+My Network/>
+[4]<a Jobs/>
+[5]<a 1
+1 new message notification
+Messaging/>
+[6]<a 19
+19 new notifications
+Notifications/>
+[7]<button false>Me/>
+[8]<img />
+[9]<button false>For Business/>
+[10]<a Try Premium for KES0/>
+[11]<a Frontend Developer at Intelliverse.ai
+Nairobi, Nairobi County/>
+[12]<a Intelliverse.ai/>
+[13]<img />
+[14]<a Connection
+Grow your network
+1/>
+[15]<a Strengthen your profile with an AI writing assistant
+Try Premium for KES0/>
+[16]<a Saved items/>
+[17]<a Groups/>
+[18]<a Newsletters/>
+[19]<a Events/>
+feed updates
+Feed post number 1
+Suggested
+[20]<button false;Open control menu for post by Rahul Kochar/>
+[21]<button Dismiss post by Rahul Kochar/>
+[22]<a Rahul Kochar, graphic./>
+[23]<img />
+[24]<a View: Rahul Kochar • 3rd+ I help NGOs and Conservation Organizations sound more like a movement people want to be part of | Transforming Personal Brands in Sustainability Space | Environment Content Writer>Rahul Kochar
+Rahul Kochar
+• 3rd+
+• 3rd+
+I help NGOs and Conservation Organizations sound more like a movement people want to be part of | Transforming Personal Brands in Sustainability Space | Environment Content Writer
+I help NGOs and Conservation Organizations sound more like a movement people want to be part of | Transforming Personal Brands in Sustainability Space | Environment Content Writer/>
+[25]<a Book an appointment/>
+5d • Edited •
+5 days ago
+[26]<button Follow Rahul Kochar>Follow/>
+[27]<div Water, water, everywhere,
+And all the boards did shrink;
+Water, water, everywhere,
+Nor any drop to drink.
+Coleridge penned these lines in 1798.
+It's 2025 now: no longer poetic lines, but a reality we're confronting frequently.
+A young boy in rural India wakes up at 4 AM every day. For what? To fetch water from miles away.
+In another corner of the world, a 7 AM scenario: another boy lets the tap run while brushing teeth.
+In 1970, the Aral Sea was the fourth-largest lake in the world.
+Today, it's a desert.
+A chimpanzee, after quenching its thirst, gently wipes the hands of the human who offered it water.
+It can be viewed as nature reminding us of the basics: water is sacred. It is life.
+Yet nature (wildlife) suffers like they have no right to exist.
+Humans continue to deplete natural resources at a rate that nature cannot replenish.
+Rivers are diverted for luxury resorts, groundwater is overexploited for industrial farming, all while millions of liters evaporate through leaks, inefficiencies, and mindless habits.
+Unfortunately, our careless actions are driving countless species to the edge of survival.
+So, what does this all point toward?
+Two realities. One planet. Isn't it?
+World Water Day celebrated on March 22 every year, aims to inspire action and mobilize efforts to address the global water crisis. So, the key takeaway?
+Let's stop treating water like an endless playlist that we keep using until the music stops.
+Instead, start respecting it as the lifeline for countless life forms on Earth.
+PS. Looking for an environment writer to amplify your message? Let's connect and collaborate.
+Video credit: Good News Movement
+hashtag
+#
+WorldWaterDay
+hashtag
+#
+tworealitiesoneplanet
+hashtag
+#
+environmentwriter
+hashtag
+#
+everydropcounts
+hashtag
+#
+consciousconsumption/>
+[28]<button see more, visually reveals content which is already detected by screen readers>…more/>
+Media player modal window
+The media could not be loaded, either because the server or network failed or because the format is not supported.
+[29]<button 399 reactions>399/>
+[30]<img />
+[31]<img />
+[32]<img />
+[33]<button 33 comments on {:actorName}{:actorName} post>33 comments/>
+[34]<button 23 reposts of {:actorName}{:actorName} post>23 reposts/>
+[35]<button React Like>Like/>
+[36]<button Comment/>
+[37]<button false;>Repost/>
+[38]<button Send in a private message>Send/>
+[39]<button Reply to conversation with Love this>Love this/>
+[40]<button Reply to conversation with Great advice>Great advice/>
+[41]<button Reply to conversation with I agree>I agree/>
+[42]<button Reply to conversation with Useful tips>Useful tips/>
+[43]<button Reply to conversation with Very informative>Very informative/>
+Very helpful
+Insightful
+[44]<button Next button/>
+[45]<img />
+[46]<div Text editor for creating content;textbox/>
+[47]<p />
+Add a comment…
+[48]<button false>Open Emoji Keyboard/>
+[49]<button Add a photo/>
+[50]<button false>Current selected sort order is Most relevant
+Most relevant/>
+[51]<a View Hansa Roy’s profile/>
+[52]<img />
+[53]<a View: Hansa Roy • 3rd+ Geologist | Ex ONGC | Chairperson @ Bridging Rainbows Foundation>Hansa Roy
+• 3rd+
+Geologist | Ex ONGC | Chairperson @ Bridging Rainbows Foundation/>
+17h
+[54]<button false/>
+[55]<div button/>
+A few days ago ,a news item caught my attention. As a pilot project sort of, a housing society in Ahmedabad, Gujarat cut it's water consumption and the corresponding bill exactly fifty percent. The reason, installation of water meter. When we have to pay, we tend to use that commodity or resource with caution.
+It's high time we start with water meters. If we can pay escalating costs of petrol and diesel, with no grumbles as such, water as a life saving fluid needs a better treatment from us.
+[56]<button see more, visually reveals content which is already detected by screen readers>…more/>
+[57]<div button/>
+[58]<button React Like to Hansa Roy’s comment>Like/>
+[59]<button 1 Reaction on Hansa Roy’s comment>1/>
+[60]<img />
+[61]<button Reply to Hansa Roy’s comment>Reply/>
+1 reply
+1 Comment on Hansa Roy’s comment
+[62]<div button/>
+[63]<a View Rahul Kochar’s profile/>
+[64]<img />
+[65]<a View: Rahul Kochar Author,  I help NGOs and Conservation Organizations sound more like a movement people want to be part of | Transforming Personal Brands in Sustainability Space | Environment Content Writer>Rahul Kochar
+Author
+I help NGOs and Conservation Organizations sound more like a movement people want to be part of | Transforming Personal Brands in Sustainability Space | Environment Content Writer/>
+16h
+[66]<button false/>
+Ah, that's interesting. Water, often taken for granted, is arguably more precious than fuel, yet its wastage continues unabated.
+Pricing water fairly can instill a sense of learning: responsible usage. Also might be the case we humans learn the hard way, what say?
+[67]<button React Like to Rahul Kochar’s comment>Like/>
+[68]<button Reply to Rahul Kochar’s comment>Reply/>
+[69]<a View Samita Chatterjee’s profile/>
+[70]<img />
+[71]<a View: Samita Chatterjee • 3rd+ Writer, made films, worked for television channels, newspapers. Presently I am self-employed.>Samita Chatterjee
+• 3rd+
+Writer, made films, worked for television channels, newspapers. Presently I am self-employed./>
+5d
+[72]<button false/>
+Very nicely written!
+You're spreading awareness on a vital issue.
+Please consider of writing on world's largest mangrove forest Sunderban (India) and climate change ( impact of climate change on our Sunderban.)
+[73]<div button/>
+[74]<button React Like to Samita Chatterjee’s comment>Like/>
+[75]<button 3 Reactions on Samita Chatterjee’s comment>3/>
+[76]<img />
+[77]<img />
+[78]<button Reply to Samita Chatterjee’s comment>Reply/>
+2 replies
+2 Replies on Samita Chatterjee’s comment
+[79]<div button/>
+[80]<button Load previous replies on Samita Chatterjee’s comment>See previous replies/>
+[81]<div button/>
+[82]<a View Chioma Nkem’s profile/>
+[83]<img />
+[84]<a View: Chioma Nkem • 3rd+ Content Writer &amp; Voice of TalkOma 🎙️ | I Nurture Writers &amp; help Brands build their image, product and services through captivating writing and storytelling.>Chioma Nkem
+• 3rd+
+Content Writer & Voice of TalkOma 🎙️ | I Nurture Writers & help Brands build their image, product and services through captivating writing and storytelling./>
+4d
+[85]<button false/>
+[86]<a />
+[87]<a Rahul Kochar/>
+I'd love to read when you do 🥺🙌
+[88]<button React Like to Chioma Nkem’s comment>Like/>
+[89]<button 1 Reaction on Chioma Nkem’s comment>1/>
+[90]<img />
+[91]<button Reply to Chioma Nkem’s comment>Reply/>
+[92]<button Load more comments/>
+[93]<button Load more comments/>
+[94]<button Skip to LinkedIn News/>
+Feed post number 2
+[95]<a Gaurav Mehta/>
+[96]<a Gaurav Mehta/>
+loves this
+[97]<button false;Open control menu for post by Armstrong Pame/>
+[98]<button Dismiss post by Armstrong Pame/>
+[99]<a Armstrong Pame, graphic./>
+[100]<img />
+[101]<a View: Armstrong Pame • 3rd+ Civil Servant &amp; Young Global Leaders @ WEF>Armstrong Pame
+Armstrong Pame
+• 3rd+
+• 3rd+
+Civil Servant & Young Global Leaders @ WEF
+Civil Servant & Young Global Leaders @ WEF/>
+17h • Edited •
+17 hours ago
+[102]<button Follow Armstrong Pame>Follow/>
+[103]<div Joint Secretary, Ministry of Education (Higher), Govt of India- Joined my new Assignment today. So excited to share the news of Being Empanelled as JS to the Govt of India and now being posted here. God's abundant blessing indeed. Forever Grateful to my Family who had stood by me through the hardest times. My well wishers who had been supportive throughout this journey- we all made it together./>
+[104]<button see more, visually reveals content which is already detected by screen readers>…more/>
+[105]<button Activate to view larger image, Image preview/>
+[106]<img />
+[107]<button Activate to view larger image, Image preview/>
+[108]<img />
+[109]<a Queens
+Crown each region/>
+[110]<img />
+[111]<a Show more/>
+Add to your feed
+[112]<button false;More information about add to your feed/>
+[113]<a />
+[114]<img />
+[115]<a British High Commission in Bangladesh
+Company • Government Relations Services/>
+[116]<button Follow/>
+[117]<a />
+[118]<img />
+[119]<a Kwame Oppong
+Director of FinTech and Innovation @ Bank of Ghana | Financial Technology | Financial Inclusion | Digital Financial Services./>
+[120]<button Follow/>
+[121]<a />
+[122]<img />
+[123]<a Linked On LinkedIn
+Company • Professional Training and Coaching/>
+[124]<button Follow/>
+[125]<a View all recommendations/>
+[126]<a About/>
+[127]<a Accessibility/>
+[128]<a Help Center/>
+[129]<button false>Privacy & Terms/>
+[130]<a Ad Choices/>
+[131]<a Advertising/>
+[132]<button false>Business Services/>
+[133]<button Get the LinkedIn app/>
+[134]<button More options>More/>
+LinkedIn Corporation © 2025
+... 5306 pixels below - scroll or extract content to see more ...
+Current step: 17/100Current date and time: 2025-03-27 11:54
+
+ RESPONSE
+{
+  "current_state": {
+    "evaluation_previous_goal": "Success - Comment section is open for Rahul's post about water conservation",
+    "memory": "Completed 4/10 posts. Currently writing comment #5 on Rahul Kochar's post about World Water Day and water conservation. Posts completed: 1. Young African Leaders, 2. Dr. Dotun's Yoruba Hymns, 3. Arvan Chan's Harvard insights, 4. Robbie Crow's BBC journey. After this post, will need one more before refreshing.",
+    "next_goal": "Write a thoughtful comment about water conservation and World Water Day"
+  },
+  "action": [
+    {
+      "input_text": {
+        "index": 46,
+        "text": "Your powerful message about water scarcity resonates deeply. The contrast between the boy fetching water at 4 AM and mindless water waste perfectly illustrates our global water crisis. We must indeed start treating water as the precious lifeline it truly is."
+      }
+    }
+  ]
+}

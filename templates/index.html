@@ -1,0 +1,137 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Automation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>LinkedIn Automation Tool</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="card">
+            <h2>Enter Automation Prompt</h2>
+            <p class="description">
+                Enter instructions for the AI to follow when interacting with LinkedIn. 
+                Be specific about what you want it to do.
+            </p>
+            
+            <form method="POST" action="{{ url_for('index') }}" enctype="multipart/form-data" id="automation-form">
+                <div class="form-group">
+                    <label for="prompt">Automation Prompt:</label>
+                    <textarea 
+                        id="prompt" 
+                        name="prompt" 
+                        rows="5" 
+                        placeholder="Example: Go to LinkedIn and connect with 5 people in my industry"
+                        required
+                    ></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="linkedin_image">Upload LinkedIn UI Image (Optional):</label>
+                    <div class="file-input-container">
+                        <input 
+                            type="file" 
+                            id="linkedin_image" 
+                            name="linkedin_image" 
+                            accept="image/*"
+                        >
+                        <p class="file-help">Upload a screenshot of LinkedIn UI to help AI understand the interface</p>
+                    </div>
+                </div>
+                
+                <div class="image-preview-container" id="preview-container" style="display: none;">
+                    <img id="image-preview" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">
+                </div>
+                
+                <div class="automation-status" id="automation-status" style="display: none;">
+                    <div class="status-spinner"></div>
+                    <p class="status-message">Running LinkedIn automation... This may take several minutes. Please wait.</p>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="submit-button">
+                    <span class="btn-text">Run Automation</span>
+                    <span class="spinner"></span>
+                </button>
+            </form>
+            
+            <div class="examples">
+                <h3>Sample Prompts:</h3>
+                <ul>
+                    {% for prompt in sample_prompts %}
+                    <li>
+                        <a href="#" class="sample-prompt" onclick="fillPrompt(this); return false;">
+                            {{ prompt }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h3>⚠️ Important Note</h3>
+            <p>
+                This tool will open a browser and perform actions on LinkedIn based on your prompt.
+                It will use your LinkedIn credentials if you're logged in. Make sure you're comfortable
+                with the automation actions before running.
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Function to fill the prompt textarea with sample text
+        function fillPrompt(element) {
+            document.getElementById('prompt').value = element.innerText;
+        }
+        
+        // Image preview functionality
+        document.getElementById('linkedin_image').addEventListener('change', function() {
+            const file = this.files[0];
+            const previewContainer = document.getElementById('preview-container');
+            const previewImg = document.getElementById('image-preview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        });
+        
+        // Show loading spinner and status message when form is submitted
+        document.getElementById('automation-form').addEventListener('submit', function(e) {
+            // Validate form first
+            if (!this.checkValidity()) {
+                return;
+            }
+            
+            // Show the running status
+            document.getElementById('automation-status').style.display = 'block';
+            
+            // Update button state
+            const button = document.getElementById('submit-button');
+            button.classList.add('loading');
+            button.querySelector('.btn-text').innerText = 'Running Automation...';
+            button.disabled = true;
+            
+            // Let the form submit and page refresh
+        });
+    </script>
+</body>
+</html>

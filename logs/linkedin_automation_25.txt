@@ -1,0 +1,617 @@
+ SystemMessage 
+You are an AI agent designed to automate browser tasks. Your goal is to accomplish the ultimate task following the rules.
+
+# Input Format
+Task
+Previous steps
+Current URL
+Open Tabs
+Interactive Elements
+[index]<type>text</type>
+- index: Numeric identifier for interaction
+- type: HTML element type (button, input, etc.)
+- text: Element description
+Example:
+[33]<button>Submit Form</button>
+
+- Only elements with numeric indexes in [] are interactive
+- elements without [] provide only context
+
+# Response Rules
+1. RESPONSE FORMAT: You must ALWAYS respond with valid JSON in this exact format:
+{"current_state": {"evaluation_previous_goal": "Success|Failed|Unknown - Analyze the current elements and the image to check if the previous goals/actions are successful like intended by the task. Mention if something unexpected happened. Shortly state why/why not",
+"memory": "Description of what has been done and what you need to remember. Be very specific. Count here ALWAYS how many times you have done something and how many remain. E.g. 0 out of 10 websites analyzed. Continue with abc and xyz",
+"next_goal": "What needs to be done with the next immediate action"},
+"action":[{"one_action_name": {// action-specific parameter}}, // ... more actions in sequence]}
+
+2. ACTIONS: You can specify multiple actions in the list to be executed in sequence. But always specify only one action name per item. Use maximum {max_actions} actions per sequence.
+Common action sequences:
+- Form filling: [{"input_text": {"index": 1, "text": "username"}}, {"input_text": {"index": 2, "text": "password"}}, {"click_element": {"index": 3}}]
+- Navigation and extraction: [{"go_to_url": {"url": "https://example.com"}}, {"extract_content": {"goal": "extract the names"}}]
+- Actions are executed in the given order
+- If the page changes after an action, the sequence is interrupted and you get the new state.
+- Only provide the action sequence until an action which changes the page state significantly.
+- Try to be efficient, e.g. fill forms at once, or chain actions where nothing changes on the page
+- only use multiple actions if it makes sense.
+
+3. ELEMENT INTERACTION:
+- Only use indexes of the interactive elements
+- Elements marked with "[]Non-interactive text" are non-interactive
+
+4. NAVIGATION & ERROR HANDLING:
+- If no suitable elements exist, use other functions to complete the task
+- If stuck, try alternative approaches - like going back to a previous page, new search, new tab etc.
+- Handle popups/cookies by accepting or closing them
+- Use scroll to find elements you are looking for
+- If you want to research something, open a new tab instead of using the current tab
+- If captcha pops up, try to solve it - else try a different approach
+- If the page is not fully loaded, use wait action
+
+5. TASK COMPLETION:
+- Use the done action as the last action as soon as the ultimate task is complete
+- Dont use "done" before you are done with everything the user asked you, except you reach the last step of max_steps. 
+- If you reach your last step, use the done action even if the task is not fully finished. Provide all the information you have gathered so far. If the ultimate task is completly finished set success to true. If not everything the user asked for is completed set success in done to false!
+- If you have to do something repeatedly for example the task says for "each", or "for all", or "x times", count always inside "memory" how many times you have done it and how many remain. Don't stop until you have completed like the task asked you. Only call done after the last step.
+- Don't hallucinate actions
+- Make sure you include everything you found out for the ultimate task in the done text parameter. Do not just say you are done, but include the requested information of the task. 
+
+6. VISUAL CONTEXT:
+- When an image is provided, use it to understand the page layout
+- Bounding boxes with labels on their top right corner correspond to element indexes
+
+7. Form filling:
+- If you fill an input field and your action sequence is interrupted, most often something changed e.g. suggestions popped up under the field.
+
+8. Long tasks:
+- Keep track of the status and subresults in the memory. 
+
+9. Extraction:
+- If your task is to find information - call extract_content on the specific pages to get and store the information.
+Your responses must be always JSON with the specified format.
+
+ HumanMessage 
+Your ultimate task is: """
+                Note: The user has uploaded a screenshot of the LinkedIn interface to help you understand the UI.
+                Use your knowledge of LinkedIn's interface to navigate the site based on the provided instructions.
+                Pay special attention to the structure of posts, the comment sections, and interactive elements.
+                
+
+Go to https://www.linkedin.com/feed/ and comment on posts after reading them, and insert a comment based on their paragraph content, ignore links and hash tag eg #school. After posting a comment, to find more posts scrolling down, comment on 10 posts. My account email: contact@chebonkelvin.com password: @?Kelvin11468 on linkedin user interface i have attached sample post on image. 
+
+Task: Read and comment on LinkedIn posts
+
+1. Navigate to LinkedIn feed: https://www.linkedin.com/feed/
+
+2. For each post:
+   - Look for the post content (paragraph text)
+   - Click "...more" if available to read the full content
+   - Ignore hashtags and links when formulating your comment
+   - Write a relevant comment based on the post's text content
+   - Click the "Comment" button to submit
+
+3. Comment process:
+   - Find the comment section (look for [icon-text(comment)])
+   - Click to expand the comment area
+   - Type your comment in the input field with placeholder "Add a comment"
+   - Click the "Comment" button that appears
+
+4. Continue scrolling to find more posts
+   - Comment on a total of 10 posts
+   - Comment on two posts then refresh, then another 2 post till 10 posts
+   - Skip cards that are recommendations (profile suggestions)
+
+5. How to identify posts:
+   - Posts have reaction options at the bottom ([icon-text(like)]-[icon-text(comment)])
+   - Posts typically have paragraphs of text (1-3 lines)
+   - Posts may include media (images/videos)
+   - Some posts may be reposts (showing two profile details)
+
+6. When commenting:
+   - Be relevant to the post content
+   - comments should not be more than 60 words
+   - If it's a repost, you can address either the original content or both
+   - Keep comments thoughtful and professional
+
+
+""". If you achieved your ultimate task, stop everything and use the done action in the next step to complete the task. If not, continue as usual.
+
+ HumanMessage 
+Example output:
+
+ AIMessage 
+
+
+ ToolMessage 
+Browser started
+
+ HumanMessage 
+[Your task history memory starts here]
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🔗  Navigated to https://www.linkedin.com/feed/
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input contact@chebonkelvin.com into index 2
+
+ HumanMessage 
+Action result: ⌨️  Input @?Kelvin11468 into index 3
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input contact@chebonkelvin.com into index 2
+
+ HumanMessage 
+Action result: ⌨️  Input @?Kelvin11468 into index 3
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 46: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input This is a fantastic initiative to help young leaders transform their potential into meaningful impact. Having dedicated speakers like Gift Ifokwe and Chioma Emmanuel will provide valuable insights for personal development. Looking forward to the positive outcomes from this session! into index 54
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 58: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 97: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input What a beautiful way to combine entrepreneurship with spiritual purpose! The Evening of Yoruba Hymns is not just an event, but a meaningful bridge between business and faith. Supporting missionary work through such initiatives shows how different paths can lead to the same goal of serving. into index 50
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input What a beautiful way to combine entrepreneurship with spiritual purpose! The Evening of Yoruba Hymns is not just an event, but a meaningful bridge between business and faith. Supporting missionary work through such initiatives shows how different paths can lead to the same goal of serving. into index 50
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 74: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input Your insights on premortem analysis and the balance between AI adoption and human leadership are particularly valuable. The point about transformation leadership being about managing change at a tolerable rate really resonates. Thank you for sharing these practical leadership lessons! into index 55
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 59: Comment
+
+ HumanMessage 
+Action result: 🕒  Waiting for 3 seconds
+
+ HumanMessage 
+Action result: 🔍  Scrolled down the page by one page
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 69: Comment
+
+ HumanMessage 
+Action result: Something new appeared after action 1 / 2
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input Your journey perfectly illustrates how authenticity and strategic thinking can create meaningful change. The way you've combined personal experience with organizational strategy is inspiring. Thank you for showing that vulnerability and leadership go hand in hand. into index 37
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 41: Comment
+
+ HumanMessage 
+Action result: 🕒  Waiting for 3 seconds
+
+ HumanMessage 
+Action result: 🔗  Navigated to https://www.linkedin.com/feed/
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 51: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input Your powerful message about water scarcity resonates deeply. The contrast between the boy fetching water at 4 AM and mindless water waste perfectly illustrates our global water crisis. We must indeed start treating water as the precious lifeline it truly is. into index 46
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 50: Comment
+
+ HumanMessage 
+Action result: 🕒  Waiting for 3 seconds
+
+ HumanMessage 
+Action result: 🔍  Scrolled down the page by one page
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 81: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input Congratulations on your new role as Joint Secretary! Your appointment speaks to your dedication and expertise in civil service. Looking forward to seeing how your leadership will contribute to advancing education initiatives at the national level. into index 68
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 67: Comment
+
+ HumanMessage 
+Action result: 🕒  Waiting for 3 seconds
+
+ HumanMessage 
+Action result: 🔗  Navigated to https://www.linkedin.com/feed/
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 52: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 52: Comment
+
+ HumanMessage 
+[Task history memory ends]
+[Current state starts here]
+The following is one-time information - if you need to remember it write it to memory:
+Current url: https://www.linkedin.com/feed/
+Available tabs:
+[TabInfo(page_id=0, url='https://www.linkedin.com/feed/', title='(22) Feed | LinkedIn')]
+Interactive elements from top layer of the current page inside the viewport:
+[Start of page]
+0 notifications total
+[0]<a />
+[1]<input combobox;false;text;Search/>
+[2]<a Home/>
+[3]<a 1
+1 new network update notification
+My Network/>
+[4]<a Jobs/>
+[5]<a 1
+1 new message notification
+Messaging/>
+[6]<a 20
+20 new notifications
+Notifications/>
+[7]<button false>Me/>
+[8]<img />
+[9]<button false>For Business/>
+[10]<a Try Premium for KES0/>
+[11]<a Default background />
+[12]<a />
+[13]<img />
+[14]<a Kelvin Chebon
+Frontend Developer at Intelliverse.ai
+Nairobi, Nairobi County/>
+[15]<a Intelliverse.ai/>
+[16]<img />
+[17]<a Connection
+Grow your network
+1/>
+[18]<a Grow your career or business with Premium
+Try Premium for KES0/>
+[19]<a Saved items/>
+[20]<a Groups/>
+[21]<a Newsletters/>
+[22]<a Events/>
+[23]<a />
+[24]<img />
+[25]<button Start a post/>
+[26]<button Add a video>Video/>
+[27]<button Add a photo>Photo/>
+[28]<a Write an article on LinkedIn>Write article/>
+[29]<button false>Sort by:
+Top/>
+feed updates
+Feed post number 1
+Suggested
+[30]<button false;Open control menu for post by Rahul Kochar/>
+[31]<button Dismiss post by Rahul Kochar/>
+[32]<a Rahul Kochar, graphic./>
+[33]<img />
+[34]<a View: Rahul Kochar • 3rd+ I help NGOs and Conservation Organizations sound more like a movement people want to be part of | Transforming Personal Brands in Sustainability Space | Environment Content Writer>Rahul Kochar
+Rahul Kochar
+• 3rd+
+• 3rd+
+I help NGOs and Conservation Organizations sound more like a movement people want to be part of | Transforming Personal Brands in Sustainability Space | Environment Content Writer
+I help NGOs and Conservation Organizations sound more like a movement people want to be part of | Transforming Personal Brands in Sustainability Space | Environment Content Writer/>
+[35]<a Book an appointment/>
+1d •
+1 day ago
+[36]<button Follow Rahul Kochar>Follow/>
+[37]<div Flesh in the wild as a diet? Common.
+Grass as a diet? Nothing strange.
+But ever heard of a life form munching on a piece of wood?
+Yes, deep in the murky waters of Amazon (S. America), a creature named Panaque catfish does the unthinkable.
+It gnaws through submerged wood breaking it down with its spoon-shaped, scraper-like teeth.
+But it doesn't digest wood the way termites do. Nor does it chew the way cows do with grass.
+Instead, it scrapes off bits, extracts nutrients from the microbes in the decaying material, and excretes the undigestible parts.
+So, their nutrition comes from the microorganisms and organic matter trapped in the wood.
+But why am I telling all this?
+Because of the misinformation that spreads fast.
+For instance, vultures are often bestowed with the title 'dirty scavengers', when in reality are healthy ecosystem maintainers.
+Similar is the case with Panaque catfish who play a crucial role in maintaining the health of ecosystems in Amazon by preventing excessive buildup of organic matter. But unfortunately, they are labelled as wood-eating catfish.
+So, the next time you hear any outrageous claim: pause and dig deeper before sensationalizing any fact.
+What do you think about the various claims made about this species? Let me know in the comments section./>
+[38]<a hashtag
+#
+Panaquecatfish/>
+[39]<a hashtag
+#
+naturalworld/>
+[40]<a hashtag
+#
+environmentwriter/>
+[41]<a hashtag
+#
+wildlifefacts/>
+[42]<a hashtag
+#
+biodiversity/>
+[43]<button see more, visually reveals content which is already detected by screen readers>…more/>
+[44]<button Activate to view larger image,/>
+[45]<img />
+Activate to view larger image,
+[46]<button 28 reactions>28/>
+[47]<img />
+[48]<img />
+[49]<img />
+[50]<button 8 comments on {:actorName}{:actorName} post>8 comments/>
+[51]<button React Like>Like/>
+[52]<button Comment/>
+[53]<button false;>Repost/>
+[54]<button Send in a private message>Send/>
+[55]<button Reply to conversation with Valid point>Valid point/>
+[56]<button Reply to conversation with Love this>Love this/>
+[57]<button Reply to conversation with I agree>I agree/>
+[58]<button Reply to conversation with Good insight>Good insight/>
+[59]<button Reply to conversation with Well said Rahul>Well said Rahul/>
+Thanks for sharing
+Interesting
+[60]<button Next button/>
+[61]<img />
+[62]<div Text editor for creating content;textbox/>
+[63]<p />
+Add a comment…
+[64]<button false>Open Emoji Keyboard/>
+[65]<button Add a photo/>
+[66]<button false>Current selected sort order is Most relevant
+Most relevant/>
+[67]<a View Flor Maria Cruz’s profile/>
+[68]<img />
+[69]<a View: Flor Maria Cruz • 3rd+ The story behind the slides — climate pitch decks that earn attention and open investor doors | THUNK: Ideas That Land Hard | Mad Men obsessed.>Flor Maria Cruz
+• 3rd+
+The story behind the slides — climate pitch decks that earn attention and open investor doors | THUNK: Ideas That Land Hard | Mad Men obsessed./>
+11h
+[70]<button false/>
+You made me look this up,
+[71]<a />
+[72]<a Rahul/>
+. Your posts always teach me something new. In this case, I read that Panaque catfish have gut bacteria like cows. Who knew?
+Still, they can’t “eat” wood, only scrape and recycle it.
+Calling them wood-eaters is like calling Nemo a shark.
+They’re cleanup crew, not destroyers.
+Nature’s weirdos usually have the best jobs, right?
+[73]<button see more, visually reveals content which is already detected by screen readers>…more/>
+[74]<div button/>
+[75]<button React Like to Flor Maria Cruz’s comment>Like/>
+[76]<button 1 Reaction on Flor Maria Cruz’s comment>1/>
+[77]<img />
+[78]<button Reply to Flor Maria Cruz’s comment>Reply/>
+1 reply
+1 Comment on Flor Maria Cruz’s comment
+[79]<div button/>
+[80]<a View Rahul Kochar’s profile/>
+[81]<img />
+[82]<a View: Rahul Kochar Author,  I help NGOs and Conservation Organizations sound more like a movement people want to be part of | Transforming Personal Brands in Sustainability Space | Environment Content Writer>Rahul Kochar
+Author
+I help NGOs and Conservation Organizations sound more like a movement people want to be part of | Transforming Personal Brands in Sustainability Space | Environment Content Writer/>
+3h
+[83]<button false/>
+Yeah. Nature is full of wonders, but we misconceptions we harbor can cause unnecessary actions from our end.
+It's time we recognize how our labeling is affecting species and appreciate the crucial workers engaged in keeping balance in check.
+[84]<button React Like to Rahul Kochar’s comment>Like/>
+[85]<button Reply to Rahul Kochar’s comment>Reply/>
+[86]<a View God'sfavour Agbora 💚’s profile/>
+[87]<img />
+[88]<a View: God&#39;sfavour Agbora 💚 • 3rd+ I Write Content That Turns Your Brand&#39;s Sustainability Story Into Sales | Sustainability Content Marketer | Environmentalist>God'sfavour Agbora 💚
+• 3rd+
+I Write Content That Turns Your Brand's Sustainability Story Into Sales | Sustainability Content Marketer | Environmentalist/>
+1d
+[89]<button false/>
+[90]<div button/>
+To be honest, this is a discovery.
+We really need to dig deeper to see the good in these animals rather than labelling them as 'bad'.
+Thank you for sharing,
+[91]<a />
+[92]<a Rahul Kochar/>
+[93]<button see more, visually reveals content which is already detected by screen readers>…more/>
+[94]<div button/>
+[95]<button React Like to God&#39;sfavour Agbora 💚’s comment>Like/>
+[96]<button 1 Reaction on God&#39;sfavour Agbora 💚’s comment>1/>
+[97]<img />
+[98]<button Reply to God&#39;sfavour Agbora 💚’s comment>Reply/>
+1 reply
+1 Comment on God'sfavour Agbora 💚’s comment
+Today’s puzzle games
+[99]<a Zip
+Complete the path/>
+[100]<img />
+[101]<a Tango
+Harmonize the grid/>
+[102]<img />
+[103]<a Queens
+Crown each region/>
+[104]<img />
+[105]<a Show more/>
+Add to your feed
+[106]<button false;More information about add to your feed/>
+[107]<a />
+[108]<img />
+[109]<a British High Commission in Bangladesh
+Company • Government Relations Services/>
+[110]<button Follow/>
+[111]<a />
+[112]<img />
+[113]<a Kwame Oppong
+Director of FinTech and Innovation @ Bank of Ghana | Financial Technology | Financial Inclusion | Digital Financial Services./>
+[114]<button Follow/>
+[115]<a />
+[116]<img />
+[117]<a Writer
+Company • Software Development/>
+[118]<button Follow/>
+[119]<a View all recommendations/>
+[120]<a About/>
+[121]<a Accessibility/>
+[122]<a Help Center/>
+[123]<button false>Privacy & Terms/>
+[124]<a Ad Choices/>
+[125]<a Advertising/>
+[126]<button false>Business Services/>
+Get the LinkedIn app
+More
+LinkedIn Corporation © 2025
+... 3372 pixels below - scroll or extract content to see more ...
+Current step: 24/100Current date and time: 2025-03-27 11:56
+
+ RESPONSE
+{
+  "current_state": {
+    "evaluation_previous_goal": "Success - Comment section is open and ready for input",
+    "memory": "Completed 6/10 posts. Currently writing comment #7 on Rahul's post about Panaque catfish. Posts completed: 1. Young African Leaders, 2. Dr. Dotun's Yoruba Hymns, 3. Arvan Chan's Harvard insights, 4. Robbie Crow's BBC journey, 5. Rahul's water conservation post, 6. Armstrong's Joint Secretary post. Need 3 more posts after this one.",
+    "next_goal": "Click the Post button to submit our comment and then look for the next post"
+  },
+  "action": [
+    {
+      "click_element": {
+        "index": 62
+      }
+    },
+    {
+      "wait": {
+        "seconds": 3
+      }
+    },
+    {
+      "scroll_down": {}
+    }
+  ]
+}

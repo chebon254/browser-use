@@ -1,0 +1,176 @@
+ SystemMessage 
+You are an AI agent designed to automate browser tasks. Your goal is to accomplish the ultimate task following the rules.
+
+# Input Format
+Task
+Previous steps
+Current URL
+Open Tabs
+Interactive Elements
+[index]<type>text</type>
+- index: Numeric identifier for interaction
+- type: HTML element type (button, input, etc.)
+- text: Element description
+Example:
+[33]<button>Submit Form</button>
+
+- Only elements with numeric indexes in [] are interactive
+- elements without [] provide only context
+
+# Response Rules
+1. RESPONSE FORMAT: You must ALWAYS respond with valid JSON in this exact format:
+{"current_state": {"evaluation_previous_goal": "Success|Failed|Unknown - Analyze the current elements and the image to check if the previous goals/actions are successful like intended by the task. Mention if something unexpected happened. Shortly state why/why not",
+"memory": "Description of what has been done and what you need to remember. Be very specific. Count here ALWAYS how many times you have done something and how many remain. E.g. 0 out of 10 websites analyzed. Continue with abc and xyz",
+"next_goal": "What needs to be done with the next immediate action"},
+"action":[{"one_action_name": {// action-specific parameter}}, // ... more actions in sequence]}
+
+2. ACTIONS: You can specify multiple actions in the list to be executed in sequence. But always specify only one action name per item. Use maximum {max_actions} actions per sequence.
+Common action sequences:
+- Form filling: [{"input_text": {"index": 1, "text": "username"}}, {"input_text": {"index": 2, "text": "password"}}, {"click_element": {"index": 3}}]
+- Navigation and extraction: [{"go_to_url": {"url": "https://example.com"}}, {"extract_content": {"goal": "extract the names"}}]
+- Actions are executed in the given order
+- If the page changes after an action, the sequence is interrupted and you get the new state.
+- Only provide the action sequence until an action which changes the page state significantly.
+- Try to be efficient, e.g. fill forms at once, or chain actions where nothing changes on the page
+- only use multiple actions if it makes sense.
+
+3. ELEMENT INTERACTION:
+- Only use indexes of the interactive elements
+- Elements marked with "[]Non-interactive text" are non-interactive
+
+4. NAVIGATION & ERROR HANDLING:
+- If no suitable elements exist, use other functions to complete the task
+- If stuck, try alternative approaches - like going back to a previous page, new search, new tab etc.
+- Handle popups/cookies by accepting or closing them
+- Use scroll to find elements you are looking for
+- If you want to research something, open a new tab instead of using the current tab
+- If captcha pops up, try to solve it - else try a different approach
+- If the page is not fully loaded, use wait action
+
+5. TASK COMPLETION:
+- Use the done action as the last action as soon as the ultimate task is complete
+- Dont use "done" before you are done with everything the user asked you, except you reach the last step of max_steps. 
+- If you reach your last step, use the done action even if the task is not fully finished. Provide all the information you have gathered so far. If the ultimate task is completly finished set success to true. If not everything the user asked for is completed set success in done to false!
+- If you have to do something repeatedly for example the task says for "each", or "for all", or "x times", count always inside "memory" how many times you have done it and how many remain. Don't stop until you have completed like the task asked you. Only call done after the last step.
+- Don't hallucinate actions
+- Make sure you include everything you found out for the ultimate task in the done text parameter. Do not just say you are done, but include the requested information of the task. 
+
+6. VISUAL CONTEXT:
+- When an image is provided, use it to understand the page layout
+- Bounding boxes with labels on their top right corner correspond to element indexes
+
+7. Form filling:
+- If you fill an input field and your action sequence is interrupted, most often something changed e.g. suggestions popped up under the field.
+
+8. Long tasks:
+- Keep track of the status and subresults in the memory. 
+
+9. Extraction:
+- If your task is to find information - call extract_content on the specific pages to get and store the information.
+Your responses must be always JSON with the specified format.
+
+ HumanMessage 
+Your ultimate task is: """Go to https://www.linkedin.com""". If you achieved your ultimate task, stop everything and use the done action in the next step to complete the task. If not, continue as usual.
+
+ HumanMessage 
+Example output:
+
+ AIMessage 
+
+
+ ToolMessage 
+Browser started
+
+ HumanMessage 
+[Your task history memory starts here]
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🔗  Navigated to https://www.linkedin.com
+
+ HumanMessage 
+[Task history memory ends]
+[Current state starts here]
+The following is one-time information - if you need to remember it write it to memory:
+Current url: https://www.linkedin.com/
+Available tabs:
+[TabInfo(page_id=0, url='https://www.linkedin.com/', title='LinkedIn: Log In or Sign Up')]
+Interactive elements from top layer of the current page inside the viewport:
+[Start of page]
+LinkedIn
+LinkedIn is better on the app
+Don’t have the app? Get it in the Microsoft Store.
+[0]<a Open the app/>
+[1]<button Dismiss/>
+[2]<a LinkedIn/>
+[3]<a Articles/>
+[4]<a People/>
+[5]<a Learning/>
+[6]<a Jobs/>
+[7]<a Games/>
+[8]<a Get the app/>
+[9]<a Join now/>
+[10]<a Sign in/>
+Welcome to your professional community
+[11]<div button;Continue with google/>
+[12]<div button>Continue with Google
+Continue with Google/>
+[13]<a Sign in with email/>
+By clicking Continue to join or sign in, you agree to LinkedIn’s
+User Agreement
+,
+[14]<a Privacy Policy/>
+, and
+[15]<a Cookie Policy/>
+.
+New to LinkedIn?
+[16]<a Join now/>
+Explore collaborative articles
+We’re unlocking community knowledge in a new way. Experts add insights directly into each article, started with the help of AI.
+[17]<a Marketing/>
+[18]<a Public Administration/>
+[19]<a Healthcare/>
+[20]<a Engineering/>
+[21]<a IT Services/>
+[22]<a Sustainability/>
+[23]<a Business Administration/>
+[24]<a Telecommunications/>
+[25]<a HR Management/>
+[26]<a Show all collaborative articles>Show all/>
+Find the right job or internship for you
+[27]<a Engineering/>
+[28]<a Business Development/>
+[29]<a Finance/>
+[30]<a Administrative Assistant/>
+[31]<a Retail Associate/>
+[32]<a Customer Service/>
+[33]<a Operations/>
+[34]<a Information Technology/>
+[35]<a Marketing/>
+[36]<a Human Resources/>
+[37]<button false>Show more/>
+Post your job for millions of people to see
+... 4641 pixels below - scroll or extract content to see more ...
+Current step: 2/100Current date and time: 2025-03-22 01:47
+
+ RESPONSE
+{
+  "current_state": {
+    "evaluation_previous_goal": "Success - Successfully navigated to LinkedIn.com as requested",
+    "memory": "Task completed - Reached LinkedIn.com homepage which shows the login page and various options like 'Join now', 'Sign in', and collaborative articles.",
+    "next_goal": "Task is complete - using done action"
+  },
+  "action": [
+    {
+      "done": {
+        "text": "Successfully navigated to https://www.linkedin.com. The page is loaded and showing the LinkedIn homepage with options to sign in, join, and explore various features like collaborative articles, jobs, and learning resources.",
+        "success": true
+      }
+    }
+  ]
+}

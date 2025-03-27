@@ -1,0 +1,442 @@
+ SystemMessage 
+You are an AI agent designed to automate browser tasks. Your goal is to accomplish the ultimate task following the rules.
+
+# Input Format
+Task
+Previous steps
+Current URL
+Open Tabs
+Interactive Elements
+[index]<type>text</type>
+- index: Numeric identifier for interaction
+- type: HTML element type (button, input, etc.)
+- text: Element description
+Example:
+[33]<button>Submit Form</button>
+
+- Only elements with numeric indexes in [] are interactive
+- elements without [] provide only context
+
+# Response Rules
+1. RESPONSE FORMAT: You must ALWAYS respond with valid JSON in this exact format:
+{"current_state": {"evaluation_previous_goal": "Success|Failed|Unknown - Analyze the current elements and the image to check if the previous goals/actions are successful like intended by the task. Mention if something unexpected happened. Shortly state why/why not",
+"memory": "Description of what has been done and what you need to remember. Be very specific. Count here ALWAYS how many times you have done something and how many remain. E.g. 0 out of 10 websites analyzed. Continue with abc and xyz",
+"next_goal": "What needs to be done with the next immediate action"},
+"action":[{"one_action_name": {// action-specific parameter}}, // ... more actions in sequence]}
+
+2. ACTIONS: You can specify multiple actions in the list to be executed in sequence. But always specify only one action name per item. Use maximum {max_actions} actions per sequence.
+Common action sequences:
+- Form filling: [{"input_text": {"index": 1, "text": "username"}}, {"input_text": {"index": 2, "text": "password"}}, {"click_element": {"index": 3}}]
+- Navigation and extraction: [{"go_to_url": {"url": "https://example.com"}}, {"extract_content": {"goal": "extract the names"}}]
+- Actions are executed in the given order
+- If the page changes after an action, the sequence is interrupted and you get the new state.
+- Only provide the action sequence until an action which changes the page state significantly.
+- Try to be efficient, e.g. fill forms at once, or chain actions where nothing changes on the page
+- only use multiple actions if it makes sense.
+
+3. ELEMENT INTERACTION:
+- Only use indexes of the interactive elements
+- Elements marked with "[]Non-interactive text" are non-interactive
+
+4. NAVIGATION & ERROR HANDLING:
+- If no suitable elements exist, use other functions to complete the task
+- If stuck, try alternative approaches - like going back to a previous page, new search, new tab etc.
+- Handle popups/cookies by accepting or closing them
+- Use scroll to find elements you are looking for
+- If you want to research something, open a new tab instead of using the current tab
+- If captcha pops up, try to solve it - else try a different approach
+- If the page is not fully loaded, use wait action
+
+5. TASK COMPLETION:
+- Use the done action as the last action as soon as the ultimate task is complete
+- Dont use "done" before you are done with everything the user asked you, except you reach the last step of max_steps. 
+- If you reach your last step, use the done action even if the task is not fully finished. Provide all the information you have gathered so far. If the ultimate task is completly finished set success to true. If not everything the user asked for is completed set success in done to false!
+- If you have to do something repeatedly for example the task says for "each", or "for all", or "x times", count always inside "memory" how many times you have done it and how many remain. Don't stop until you have completed like the task asked you. Only call done after the last step.
+- Don't hallucinate actions
+- Make sure you include everything you found out for the ultimate task in the done text parameter. Do not just say you are done, but include the requested information of the task. 
+
+6. VISUAL CONTEXT:
+- When an image is provided, use it to understand the page layout
+- Bounding boxes with labels on their top right corner correspond to element indexes
+
+7. Form filling:
+- If you fill an input field and your action sequence is interrupted, most often something changed e.g. suggestions popped up under the field.
+
+8. Long tasks:
+- Keep track of the status and subresults in the memory. 
+
+9. Extraction:
+- If your task is to find information - call extract_content on the specific pages to get and store the information.
+Your responses must be always JSON with the specified format.
+
+ HumanMessage 
+Your ultimate task is: """
+                Note: The user has uploaded a screenshot of the LinkedIn interface to help you understand the UI.
+                Use your knowledge of LinkedIn's interface to navigate the site based on the provided instructions.
+                Pay special attention to the structure of posts, the comment sections, and interactive elements.
+                
+
+Go to https://www.linkedin.com/feed/ and comment on posts after reading them, and insert a comment based on their paragraph content, ignore links and hash tag eg #school. After posting a comment, to find more posts scrolling down, comment on 10 posts. My account email: contact@chebonkelvin.com password: @?Kelvin11468 on linkedin user interface i have attached sample post on image. 
+
+Task: Read and comment on LinkedIn posts
+
+1. Navigate to LinkedIn feed: https://www.linkedin.com/feed/
+
+2. For each post:
+   - Look for the post content (paragraph text)
+   - Click "...more" if available to read the full content
+   - Ignore hashtags and links when formulating your comment
+   - Write a relevant comment based on the post's text content
+   - Click the "Comment" button to submit
+
+3. Comment process:
+   - Find the comment section (look for [icon-text(comment)])
+   - Click to expand the comment area
+   - Type your comment in the input field with placeholder "Add a comment"
+   - Click the "Comment" button that appears
+
+4. Continue scrolling to find more posts
+   - Comment on a total of 10 posts
+   - Comment on two posts then refresh, then another 2 post till 10 posts
+   - Skip cards that are recommendations (profile suggestions)
+
+5. How to identify posts:
+   - Posts have reaction options at the bottom ([icon-text(like)]-[icon-text(comment)])
+   - Posts typically have paragraphs of text (1-3 lines)
+   - Posts may include media (images/videos)
+   - Some posts may be reposts (showing two profile details)
+
+6. When commenting:
+   - Be relevant to the post content
+   - comments should not be more than 60 words
+   - If it's a repost, you can address either the original content or both
+   - Keep comments thoughtful and professional
+
+
+""". If you achieved your ultimate task, stop everything and use the done action in the next step to complete the task. If not, continue as usual.
+
+ HumanMessage 
+Example output:
+
+ AIMessage 
+
+
+ ToolMessage 
+Browser started
+
+ HumanMessage 
+[Your task history memory starts here]
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🔗  Navigated to https://www.linkedin.com/feed/
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input contact@chebonkelvin.com into index 2
+
+ HumanMessage 
+Action result: ⌨️  Input @?Kelvin11468 into index 3
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input contact@chebonkelvin.com into index 2
+
+ HumanMessage 
+Action result: ⌨️  Input @?Kelvin11468 into index 3
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 46: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input This is a fantastic initiative to help young leaders transform their potential into meaningful impact. Having dedicated speakers like Gift Ifokwe and Chioma Emmanuel will provide valuable insights for personal development. Looking forward to the positive outcomes from this session! into index 54
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 58: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 97: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input What a beautiful way to combine entrepreneurship with spiritual purpose! The Evening of Yoruba Hymns is not just an event, but a meaningful bridge between business and faith. Supporting missionary work through such initiatives shows how different paths can lead to the same goal of serving. into index 50
+
+ HumanMessage 
+[Task history memory ends]
+[Current state starts here]
+The following is one-time information - if you need to remember it write it to memory:
+Current url: https://www.linkedin.com/feed/
+Available tabs:
+[TabInfo(page_id=0, url='https://www.linkedin.com/feed/', title='(21) Feed | LinkedIn')]
+Interactive elements from top layer of the current page inside the viewport:
+... 1749 pixels above - scroll or extract content to see more ...
+[0]<a />
+[1]<input combobox;false;text;Search/>
+[2]<a Home/>
+[3]<a 1
+1 new network update notification
+My Network/>
+[4]<a Jobs/>
+[5]<a 1
+1 new message notification
+Messaging/>
+[6]<a 19
+19 new notifications
+Notifications/>
+[7]<button false>Me/>
+[8]<img />
+[9]<button false>For Business/>
+[10]<a Try Premium for KES0/>
+This is a fantastic initiative to help young leaders transform their potential into meaningful impact. Having dedicated speakers like Gift Ifokwe and Chioma Emmanuel will provide valuable insights for personal development. Looking forward to the positive outcomes from this session!
+[11]<button React Like to Kelvin Chebon’s comment>Like/>
+[12]<button Reply to Kelvin Chebon’s comment>Reply/>
+[13]<a View Young African Leaders for Global Impact’s profile/>
+[14]<img />
+[15]<a View: Young African Leaders for Global Impact Author,  600 followers>Young African Leaders for Global Impact
+Author
+600 followers/>
+1d
+[16]<button false/>
+We look forward to seeing you all
+Be part of the moment 🤭
+[17]<button React Like to Young African Leaders for Global Impact’s comment>Like/>
+[18]<button 1 Reaction on Young African Leaders for Global Impact’s comment>1/>
+[19]<img />
+[20]<button Reply to Young African Leaders for Global Impact’s comment>Reply/>
+[21]<a View Young African Leaders for Global Impact’s profile/>
+[22]<img />
+[23]<a View: Young African Leaders for Global Impact Author,  600 followers>Young African Leaders for Global Impact
+Author
+600 followers/>
+1d
+[24]<button false/>
+It's this evening 💃💃💃💃
+Make it a  date 🌹
+[25]<button React Like to Young African Leaders for Global Impact’s comment>Like/>
+[26]<button 1 Reaction on Young African Leaders for Global Impact’s comment>1/>
+[27]<img />
+[28]<button Reply to Young African Leaders for Global Impact’s comment>Reply/>
+[29]<button Load more comments/>
+[30]<button Load more comments/>
+[31]<button Skip to LinkedIn News/>
+Feed post number 2
+[32]<a />
+[33]<img />
+[34]<a Alloysius Attah/>
+finds this insightful
+[35]<button false;Open control menu for post by Dr. Dotun Olowoporoku/>
+[36]<button Dismiss post by Dr. Dotun Olowoporoku/>
+Dr.  Dotun Olowoporoku
+Dr.  Dotun Olowoporoku
+• 3rd+
+• 3rd+
+Early Stage Venture Capital | Tech Investor
+Early Stage Venture Capital | Tech Investor
+1d • Edited •
+1 day ago
+Follow
+[37]<div Years ago at the University of Lagos, my best friend and flatmate David Oke and I shared not just a room but dreams of serving God and making an impact through the gospel of Christ. Today, while I've pursued entrepreneurship and investing, David serves as a missionary in The Gambia. I see little difference in what we're called to do — be the light that shines the gospel of Christ. This perspective has shaped how I view my entrepreneurial and investment journey as an extension of helping the gospel and grace of Jesus reach as many people as possible.
+This is why I'm hosting an Evening of Yoruba Hymns on May 4th at The First Baptist Church Lagos. I chose Yoruba hymns because they represent my first profound connection with theological understanding, offering deep insights into God's nature and His relationship with me as a kid. The venue itself carries historical significance - established in 1855 as a missionary church, funded by supporters from America.
+I'll love to see you there and support in raising N100m to support the work of Praise of His Glory Ministry and train more missionaries at The Nigerian Baptist Theological Seminaries.
+Please register using this link
+https://lnkd.in/eYmQiep4
+If you're unable to attend, you can still support this cause by donating through the account details below.
+It will be evening of beautiful Yoruba hymns
+Account details
+Name: Praise of His Glory Ministry
+Bank: UBA Acct #: 101 363 1685
+Purpose: “Towards 100m Raise”/>
+[38]<button see more, visually reveals content which is already detected by screen readers>…more/>
+Media player modal window
+The media could not be loaded, either because the server or network failed or because the format is not supported.
+[39]<button 419 reactions>419/>
+[40]<img />
+[41]<img />
+[42]<img />
+[43]<button 29 comments on {:actorName}{:actorName} post>29 comments/>
+[44]<button 35 reposts of {:actorName}{:actorName} post>35 reposts/>
+[45]<button React Like>Like/>
+[46]<button Comment/>
+[47]<button false;>Repost/>
+[48]<button Send in a private message>Send/>
+[49]<img />
+[50]<div Text editor for creating content;textbox/>
+[51]<p What a beautiful way to combine entrepreneurship with spiritual purpose! The Evening of Yoruba Hymns is not just an event, but a meaningful bridge between business and faith. Supporting missionary work through such initiatives shows how different paths can lead to the same goal of serving./>
+[52]<button false>Open Emoji Keyboard/>
+[53]<button Add a photo/>
+[54]<button Comment/>
+[55]<button false>Current selected sort order is Most relevant
+Most relevant/>
+[56]<a View Iyinoluwa Aboyeji’s profile/>
+[57]<img />
+[58]<a View: Iyinoluwa Aboyeji • 3rd+ Consigliere to African founders>Iyinoluwa Aboyeji
+• 3rd+
+Consigliere to African founders/>
+(edited)
+1d
+[59]<button false/>
+[60]<div button/>
+This is fantastic! Great stuff! But you didn't share the account details.
+[61]<div button/>
+[62]<button React Like to Iyinoluwa Aboyeji’s comment>Like/>
+[63]<button 3 Reactions on Iyinoluwa Aboyeji’s comment>3/>
+[64]<img />
+[65]<button Reply to Iyinoluwa Aboyeji’s comment>Reply/>
+3 replies
+3 Replies on Iyinoluwa Aboyeji’s comment
+[66]<div button/>
+[67]<button Load previous replies on Iyinoluwa Aboyeji’s comment>See previous replies/>
+[68]<div button/>
+[69]<a View Dr.  Dotun Olowoporoku’s profile/>
+[70]<img />
+[71]<a View: Dr.  Dotun Olowoporoku Author,  Early Stage Venture Capital | Tech Investor>Dr.  Dotun Olowoporoku
+Author
+Early Stage Venture Capital | Tech Investor/>
+21h
+[72]<button false/>
+[73]<a />
+[74]<a Iyinoluwa Aboyeji/>
+[75]<a />
+[76]<a Victoria Folasade Aboaba/>
+thanks.. now in the post
+[77]<button React Like to Dr.  Dotun Olowoporoku’s comment>Like/>
+[78]<button 3 Reactions on Dr.  Dotun Olowoporoku’s comment>3/>
+[79]<img />
+[80]<button Reply to Dr.  Dotun Olowoporoku’s comment>Reply/>
+[81]<a View Asha Mweru Mbowa’s profile/>
+[82]<img />
+[83]<a View: Asha Mweru Mbowa • 3rd+ Managing Director AMI Enterprise | WomenWork | Top 40 under 40 Kenya | Board Advisor &amp; Investor | Scaling companies across Africa | Growth>Asha Mweru Mbowa
+• 3rd+
+Managing Director AMI Enterprise | WomenWork | Top 40 under 40 Kenya | Board Advisor & Investor | Scaling companies across Africa | Growth/>
+20h
+[84]<button false/>
+[85]<div button/>
+It’s so refreshing to see conversations like this happening out in the open! As someone deeply rooted in my faith and who sees work as an extension of my God-given purpose, this truly resonates. Wishing you all the best with Yoruba Hymns,
+[86]<a />
+[87]<a Dr.  Dotun Olowoporoku/>
+[88]<div button/>
+[89]<button React Like to Asha Mweru Mbowa’s comment>Like/>
+[90]<button 2 Reactions on Asha Mweru Mbowa’s comment>2/>
+[91]<img />
+[92]<button Reply to Asha Mweru Mbowa’s comment>Reply/>
+1 reply
+1 Comment on Asha Mweru Mbowa’s comment
+[93]<div button/>
+[94]<a View Dr.  Dotun Olowoporoku’s profile/>
+[95]<img />
+[96]<a View: Dr.  Dotun Olowoporoku Author,  Early Stage Venture Capital | Tech Investor>Dr.  Dotun Olowoporoku
+Author
+Early Stage Venture Capital | Tech Investor/>
+16h
+[97]<button false/>
+🙏
+[98]<button React Like to Dr.  Dotun Olowoporoku’s comment>Like/>
+[99]<button Reply to Dr.  Dotun Olowoporoku’s comment>Reply/>
+[100]<button Load more comments/>
+[101]<button Load more comments/>
+[102]<button Skip to LinkedIn News/>
+Feed post number 3
+[103]<a Nestlé, graphic./>
+[104]<img />
+[105]<a View: Nestlé 16,100,359 followers>Nestlé
+Nestlé
+16,100,359 followers
+16,100,359 followers/>
+33m • Edited •
+33 minutes ago
+[106]<button false;Open control menu for post by Nestlé/>
+[107]<button Dismiss post by Nestlé/>
+[108]<div Chez
+, nous nous engageons à développer des produits de qualité tout en limitant notre impact sur l’environnement. Cela passe aussi par nos emballages !
+Aujourd'hui, c'est notre marque emblématique Nestlé Dessert® qui franchit une nouvelle étape dans son engagement en faveur du développement durable.
+Pour l’ensemble de ses lots🍫, le film plastique qui maintenait les tablettes ensemble est désormais remplacé par un système simple et ingénieux de deux stickers à base de papier.
+Résultat ? Une suppression du suremballage plastique des lots permettant une réduction de 34 tonnes de plastique !*
+Pour en savoir plus 👉
+*par rapport aux volumes des lots Nestlé Dessert® 2024/>
+[109]<a Nestlé/>
+[110]<button see more, visually reveals content which is already detected by screen readers>…more/>
+[111]<button Show translation/>
+[112]<button Activate to view larger image,/>
+[113]<img />
+[114]<a About/>
+[115]<a Accessibility/>
+[116]<a Help Center/>
+[117]<button false>Privacy & Terms/>
+[118]<a Ad Choices/>
+[119]<a Advertising/>
+[120]<button false>Business Services/>
+[121]<button Get the LinkedIn app/>
+[122]<button More options>More/>
+LinkedIn Corporation © 2025
+... 5192 pixels below - scroll or extract content to see more ...
+Current step: 9/100Current date and time: 2025-03-27 11:51
+
+ RESPONSE
+{
+  "current_state": {
+    "evaluation_previous_goal": "Success - Comment has been typed for Dr. Dotun's post",
+    "memory": "Completed 1/10 posts. Second comment is ready to be posted. After this, we'll need to refresh the page to continue with the next 2 posts. Current posts commented on: 1. Young African Leaders post 2. Dr. Dotun's Yoruba Hymns post (pending submission)",
+    "next_goal": "Click the Comment button to post our second comment"
+  },
+  "action": [
+    {
+      "click_element": {
+        "index": 54
+      }
+    },
+    {
+      "wait": {
+        "seconds": 3
+      }
+    },
+    {
+      "go_to_url": {
+        "url": "https://www.linkedin.com/feed/"
+      }
+    }
+  ]
+}

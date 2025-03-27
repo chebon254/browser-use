@@ -1,0 +1,473 @@
+ SystemMessage 
+You are an AI agent designed to automate browser tasks. Your goal is to accomplish the ultimate task following the rules.
+
+# Input Format
+Task
+Previous steps
+Current URL
+Open Tabs
+Interactive Elements
+[index]<type>text</type>
+- index: Numeric identifier for interaction
+- type: HTML element type (button, input, etc.)
+- text: Element description
+Example:
+[33]<button>Submit Form</button>
+
+- Only elements with numeric indexes in [] are interactive
+- elements without [] provide only context
+
+# Response Rules
+1. RESPONSE FORMAT: You must ALWAYS respond with valid JSON in this exact format:
+{"current_state": {"evaluation_previous_goal": "Success|Failed|Unknown - Analyze the current elements and the image to check if the previous goals/actions are successful like intended by the task. Mention if something unexpected happened. Shortly state why/why not",
+"memory": "Description of what has been done and what you need to remember. Be very specific. Count here ALWAYS how many times you have done something and how many remain. E.g. 0 out of 10 websites analyzed. Continue with abc and xyz",
+"next_goal": "What needs to be done with the next immediate action"},
+"action":[{"one_action_name": {// action-specific parameter}}, // ... more actions in sequence]}
+
+2. ACTIONS: You can specify multiple actions in the list to be executed in sequence. But always specify only one action name per item. Use maximum {max_actions} actions per sequence.
+Common action sequences:
+- Form filling: [{"input_text": {"index": 1, "text": "username"}}, {"input_text": {"index": 2, "text": "password"}}, {"click_element": {"index": 3}}]
+- Navigation and extraction: [{"go_to_url": {"url": "https://example.com"}}, {"extract_content": {"goal": "extract the names"}}]
+- Actions are executed in the given order
+- If the page changes after an action, the sequence is interrupted and you get the new state.
+- Only provide the action sequence until an action which changes the page state significantly.
+- Try to be efficient, e.g. fill forms at once, or chain actions where nothing changes on the page
+- only use multiple actions if it makes sense.
+
+3. ELEMENT INTERACTION:
+- Only use indexes of the interactive elements
+- Elements marked with "[]Non-interactive text" are non-interactive
+
+4. NAVIGATION & ERROR HANDLING:
+- If no suitable elements exist, use other functions to complete the task
+- If stuck, try alternative approaches - like going back to a previous page, new search, new tab etc.
+- Handle popups/cookies by accepting or closing them
+- Use scroll to find elements you are looking for
+- If you want to research something, open a new tab instead of using the current tab
+- If captcha pops up, try to solve it - else try a different approach
+- If the page is not fully loaded, use wait action
+
+5. TASK COMPLETION:
+- Use the done action as the last action as soon as the ultimate task is complete
+- Dont use "done" before you are done with everything the user asked you, except you reach the last step of max_steps. 
+- If you reach your last step, use the done action even if the task is not fully finished. Provide all the information you have gathered so far. If the ultimate task is completly finished set success to true. If not everything the user asked for is completed set success in done to false!
+- If you have to do something repeatedly for example the task says for "each", or "for all", or "x times", count always inside "memory" how many times you have done it and how many remain. Don't stop until you have completed like the task asked you. Only call done after the last step.
+- Don't hallucinate actions
+- Make sure you include everything you found out for the ultimate task in the done text parameter. Do not just say you are done, but include the requested information of the task. 
+
+6. VISUAL CONTEXT:
+- When an image is provided, use it to understand the page layout
+- Bounding boxes with labels on their top right corner correspond to element indexes
+
+7. Form filling:
+- If you fill an input field and your action sequence is interrupted, most often something changed e.g. suggestions popped up under the field.
+
+8. Long tasks:
+- Keep track of the status and subresults in the memory. 
+
+9. Extraction:
+- If your task is to find information - call extract_content on the specific pages to get and store the information.
+Your responses must be always JSON with the specified format.
+
+ HumanMessage 
+Your ultimate task is: """
+                Note: The user has uploaded a screenshot of the LinkedIn interface to help you understand the UI.
+                Use your knowledge of LinkedIn's interface to navigate the site based on the provided instructions.
+                Pay special attention to the structure of posts, the comment sections, and interactive elements.
+                
+
+Go to https://www.linkedin.com/feed/ and comment on posts after reading them, and insert a comment based on their paragraph content, ignore links and hash tag eg #school. After posting a comment, to find more posts scrolling down, comment on 10 posts. My account email: contact@chebonkelvin.com password: @?Kelvin11468 on linkedin user interface i have attached sample post on image. 
+
+Task: Read and comment on LinkedIn posts
+
+1. Navigate to LinkedIn feed: https://www.linkedin.com/feed/
+
+2. For each post:
+   - Look for the post content (paragraph text)
+   - Click "...more" if available to read the full content
+   - Ignore hashtags and links when formulating your comment
+   - Write a relevant comment based on the post's text content
+   - Click the "Comment" button to submit
+
+3. Comment process:
+   - Find the comment section (look for [icon-text(comment)])
+   - Click to expand the comment area
+   - Type your comment in the input field with placeholder "Add a comment"
+   - Click the "Comment" button that appears
+
+4. Continue scrolling to find more posts
+   - Comment on a total of 10 posts
+   - Comment on two posts then refresh, then another 2 post till 10 posts
+   - Skip cards that are recommendations (profile suggestions)
+
+5. How to identify posts:
+   - Posts have reaction options at the bottom ([icon-text(like)]-[icon-text(comment)])
+   - Posts typically have paragraphs of text (1-3 lines)
+   - Posts may include media (images/videos)
+   - Some posts may be reposts (showing two profile details)
+
+6. When commenting:
+   - Be relevant to the post content
+   - comments should not be more than 60 words
+   - If it's a repost, you can address either the original content or both
+   - Keep comments thoughtful and professional
+
+
+""". If you achieved your ultimate task, stop everything and use the done action in the next step to complete the task. If not, continue as usual.
+
+ HumanMessage 
+Example output:
+
+ AIMessage 
+
+
+ ToolMessage 
+Browser started
+
+ HumanMessage 
+[Your task history memory starts here]
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🔗  Navigated to https://www.linkedin.com/feed/
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input contact@chebonkelvin.com into index 2
+
+ HumanMessage 
+Action result: ⌨️  Input @?Kelvin11468 into index 3
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input contact@chebonkelvin.com into index 2
+
+ HumanMessage 
+Action result: ⌨️  Input @?Kelvin11468 into index 3
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 46: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input This is a fantastic initiative to help young leaders transform their potential into meaningful impact. Having dedicated speakers like Gift Ifokwe and Chioma Emmanuel will provide valuable insights for personal development. Looking forward to the positive outcomes from this session! into index 54
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 58: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 97: Comment
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input What a beautiful way to combine entrepreneurship with spiritual purpose! The Evening of Yoruba Hymns is not just an event, but a meaningful bridge between business and faith. Supporting missionary work through such initiatives shows how different paths can lead to the same goal of serving. into index 50
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input What a beautiful way to combine entrepreneurship with spiritual purpose! The Evening of Yoruba Hymns is not just an event, but a meaningful bridge between business and faith. Supporting missionary work through such initiatives shows how different paths can lead to the same goal of serving. into index 50
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 74: Comment
+
+ HumanMessage 
+[Task history memory ends]
+[Current state starts here]
+The following is one-time information - if you need to remember it write it to memory:
+Current url: https://www.linkedin.com/feed/
+Available tabs:
+[TabInfo(page_id=0, url='https://www.linkedin.com/feed/', title='(21) Feed | LinkedIn')]
+Interactive elements from top layer of the current page inside the viewport:
+... 911 pixels above - scroll or extract content to see more ...
+[0]<a />
+[1]<input combobox;false;text;Search/>
+[2]<a Home/>
+[3]<a 1
+1 new network update notification
+My Network/>
+[4]<a Jobs/>
+[5]<a 1
+1 new message notification
+Messaging/>
+[6]<a 19
+19 new notifications
+Notifications/>
+[7]<button false>Me/>
+[8]<img />
+[9]<button false>For Business/>
+[10]<a Try Premium for KES0/>
+[11]<a Access exclusive tools & insights
+Try 1 month for KES0/>
+[12]<a Saved items/>
+[13]<a Groups/>
+[14]<a Newsletters/>
+[15]<a Events/>
+Media player modal window
+The media could not be loaded, either because the server or network failed or because the format is not supported.
+[16]<button 419 reactions>419/>
+[17]<img />
+[18]<img />
+[19]<img />
+[20]<button 30 comments on {:actorName}{:actorName} post>30 comments/>
+[21]<button 35 reposts of {:actorName}{:actorName} post>35 reposts/>
+[22]<button React Like>Like/>
+[23]<button Comment/>
+[24]<button false;>Repost/>
+[25]<button Send in a private message>Send/>
+[26]<button Skip to LinkedIn News/>
+Feed post number 2
+[27]<a />
+[28]<img />
+[29]<a Gabriel Pablo Marcolongo/>
+likes this
+[30]<button false;Open control menu for post by Arvan Chan/>
+[31]<button Dismiss post by Arvan Chan/>
+[32]<a Arvan Chan, graphic./>
+[33]<img />
+[34]<a View: Arvan Chan • 3rd+ Fortune 25 C-Suite Executive | Board Director | Investor | Advisor | WEF Young Global Leader | Transforming Healthcare, Education &amp; Public Safety>Arvan Chan
+Arvan Chan
+• 3rd+
+• 3rd+
+Fortune 25 C-Suite Executive | Board Director | Investor | Advisor | WEF Young Global Leader | Transforming Healthcare, Education & Public Safety
+Fortune 25 C-Suite Executive | Board Director | Investor | Advisor | WEF Young Global Leader | Transforming Healthcare, Education & Public Safety/>
+1w • Edited •
+1 week ago
+[35]<button Follow Arvan Chan>Follow/>
+I am honored and grateful for the opportunity to participate in the
+Harvard Kennedy School Executive Education
+program on Global Leadership and Public Policy for the 21st Century. Over the past couple of weeks, 65 thought leaders from over 40 countries came together to learn from one another and to explore new ways to rebuild societal trust, to restore system stability, and to leverage AI to accelerate positive impacts. Here are some key takeaways from my time at Harvard:
+1. Premortem may prove valuable when making high stake decisions. Despite all the noises in the world, leaders should pay attention to things other people don't see. While we are good at leveraging our experience to think fast, intuition sometimes leads us astray due to anchor and/or confirmation bias. We, as leaders, need to zoom out onto the “balcony” from time to time to evaluate the decisions we are making.
+2. Outcomes are not only based on skills, but also on luck. Sometimes, good processes may still lead to bad outcomes. Leaders should focus more on evaluating the quality of the decision process. By focusing on developing strategic alternatives and designing good and fair processes, we will be able to take on smarter risks and improve the odds when making high stake decisions.
+3. Transformation leadership is the work of disappointing people at a rate they can tolerate. Leading change requires agitating against a status quo, framing the new vision, and orchestrating the change adoption. When dealing with adaptive challenges, we should listen to and evaluate our stakeholders’ values, their actual and perceived losses, and their loyalty to the cause. We need to raise the heat high enough to reach the point of necessity and the threshold of learning, while keeping the disequilibrium under the limit of tolerance.
+4. AI + Me > Me. Generative AI is here to stay. In a world with an abundant of generative AI tools, not using this technology is like not using the internet. The importance of using generative AI effectively is to understand its mistakes and limitations.
+5. Finally, while we can do anything, we can’t do everything. With an increasingly complex world, strategic leadership is less about compensating for weaknesses but more about building on strengths. In addition, empathy and leadership are not trade-offs. With a more human approach, leaders need to use empathy to build trust instead of solely focusing on building confidence.
+I look forward to leveraging the insights I have gained from this program to foster innovative solutions as I continue my leadership journey. I also want to specially thank
+The Forum of Young Global Leaders
+,
+World Economic Forum
+,
+Ida Jeng Christensen
+,
+Danny Richmond
+,
+Dan Levy
+, Iris Bohnet, and other faculty members at
+Harvard University
+for organizing this learning experience.
+hashtag
+#
+Leadership
+hashtag
+#
+YGL25
+[36]<button see more, visually reveals content which is already detected by screen readers>…more/>
+[37]<button Activate to view larger image, Image preview/>
+[38]<img />
+[39]<button Activate to view larger image, Image preview/>
+[40]<img />
+[41]<button Activate to view larger image, Image preview/>
+[42]<img />
+[43]<button Activate to view larger image, Image preview/>
+[44]<img />
+Activate to view larger image,
+[45]<button 132 reactions>132/>
+[46]<img />
+[47]<img />
+[48]<img />
+[49]<button 9 comments on {:actorName}{:actorName} post>9 comments/>
+[50]<button React Like>Like/>
+[51]<button Comment/>
+[52]<button false;>Repost/>
+[53]<button Send in a private message>Send/>
+[54]<img />
+[55]<div Text editor for creating content;textbox/>
+[56]<p />
+Add a comment…
+[57]<button false>Open Emoji Keyboard/>
+[58]<button Add a photo/>
+[59]<button false>Current selected sort order is Most relevant
+Most relevant/>
+[60]<a View Geoffrey See’s profile/>
+[61]<img />
+[62]<a View: Geoffrey See • 3rd+ Chief Digital Officer building AI-first orgs post M&amp;A | Certified Psychedelic Assisted Therapist | Y Combinator | World Economic Forum YGL | Ethereum Foundation Fellow>Geoffrey See
+• 3rd+
+Chief Digital Officer building AI-first orgs post M&A | Certified Psychedelic Assisted Therapist | Y Combinator | World Economic Forum YGL | Ethereum Foundation Fellow/>
+1w
+[63]<button false/>
+[64]<div button/>
+Love to chat about AI. I am working on building AI first organizations post Roll Up. Have several thoughts from 15 years working with AI and enterprises I am penning down and would love your thoughts. Many YGLs have been very helpful in sharpening up the thinking there.
+[65]<div button/>
+[66]<button React Like to Geoffrey See’s comment>Like/>
+[67]<button Reply to Geoffrey See’s comment>Reply/>
+1 reply
+1 Comment on Geoffrey See’s comment
+[68]<div button/>
+[69]<a View Arvan Chan’s profile/>
+[70]<img />
+[71]<a View: Arvan Chan Author,  Fortune 25 C-Suite Executive | Board Director | Investor | Advisor | WEF Young Global Leader | Transforming Healthcare, Education &amp; Public Safety>Arvan Chan
+Author
+Fortune 25 C-Suite Executive | Board Director | Investor | Advisor | WEF Young Global Leader | Transforming Healthcare, Education & Public Safety/>
+1w
+[72]<button false/>
+[73]<a />
+[74]<a Geoffrey See/>
+sounds great. Let’s schedule a time to connect on that. You can DM me via LinkedIn or email.
+[75]<button React Like to Arvan Chan’s comment>Like/>
+[76]<button Reply to Arvan Chan’s comment>Reply/>
+[77]<a View George Bailey (白锦明)’s profile/>
+[78]<img />
+[79]<a View: George Bailey (白锦明) • 3rd+ Strategic Business Development Professional | Super-Connector>George Bailey (白锦明)
+• 3rd+
+Strategic Business Development Professional | Super-Connector/>
+1w
+[80]<button false/>
+[81]<div button/>
+Points #4 and #5 have been the most relevant for me lately. I’m running towards AI as quickly as I can. Also, I’m finding my niche and honing it. Very excited. Thank you for sharing. Sounds like you had some meaningful time insights.
+[82]<div button/>
+[83]<button React Like to George Bailey (白锦明)’s comment>Like/>
+[84]<button Reply to George Bailey (白锦明)’s comment>Reply/>
+1 reply
+1 Comment on George Bailey (白锦明)’s comment
+[85]<div button/>
+[86]<a View Arvan Chan’s profile/>
+[87]<img />
+[88]<a View: Arvan Chan Author,  Fortune 25 C-Suite Executive | Board Director | Investor | Advisor | WEF Young Global Leader | Transforming Healthcare, Education &amp; Public Safety>Arvan Chan
+Author
+Fortune 25 C-Suite Executive | Board Director | Investor | Advisor | WEF Young Global Leader | Transforming Healthcare, Education & Public Safety/>
+1w
+[89]<button false/>
+[90]<a />
+[91]<a George Bailey (白锦明)/>
+thanks. Let’s catch up soon.
+[92]<button React Like to Arvan Chan’s comment>Like/>
+[93]<button Reply to Arvan Chan’s comment>Reply/>
+[94]<button Load more comments/>
+[95]<button Load more comments/>
+[96]<button Skip to LinkedIn News/>
+Feed post number 3
+Suggested
+[97]<button false;Open control menu for post by Phil Neil/>
+[98]<button Dismiss post by Phil Neil/>
+[99]<a Phil Neil, graphic./>
+[100]<img />
+[101]<a View: Phil Neil • 3rd+ 8-Figure Exit Founder | Deep tech Investor | VC &amp; PE | Serial entrepreneur —Committed to Mastering the Entrepreneur&#39;s Journey While Winning Father of the Year | Speaker | EO member | Advising Founders on Growth and M&amp;A>Phil Neil
+Phil Neil
+• 3rd+
+• 3rd+
+8-Figure Exit Founder | Deep tech Investor | VC & PE | Serial entrepreneur —Committed to Mastering the Entrepreneur's Journey While Winning Father of the Year | Speaker | EO member | Advising Founders on Growth and M&A
+8-Figure Exit Founder | Deep tech Investor | VC & PE | Serial entrepreneur —Committed to Mastering the Entrepreneur's Journey While Winning Father of the Year | Speaker | EO member | Advising Founders on Growth and M&A/>
+[102]<a Visit my website/>
+21h •
+21 hours ago
+[103]<button Follow Phil Neil>Follow/>
+[104]<div No amount of data, advice, or skills will ever give us absolute certainty.
+We could spend our lives analyzing every possible scenario, collecting endless insights, and mimicking proven strategies, yet still find ourselves paralyzed by doubt.
+The truth is, certainty is not something we find—it’s something we decide. It emerges from a deep trust in our own intuition, forged through action, not endless preparation.
+Too often, we seek external validation, chasing after the latest “guaranteed” formula for success, hoping it will remove all risk.
+We sprint like a rabbit toward the next big answer, only to find ourselves exhausted, lost, and still unsure.
+Why?
+Because we have trained ourselves to depend on the certainty of others rather than cultivate our own.
+But no mentor, book, or trend knows the unique path we are meant to walk.
+Our destiny does not unfold through perfect plans; it reveals itself only when we step forward with courage, embracing uncertainty as a part of the process.
+It is far better to fail on a journey that is truly ours than to succeed while living as someone else’s creation.
+The most successful entrepreneurs, leaders, and visionaries were not those who followed a perfect blueprint—they were the ones who trusted themselves enough to take the leap, even when logic told them to wait.
+So, stop waiting for certainty. Choose it. Decide that your belief in yourself is enough. Then take action, because the path ahead will only become clear once you start walking it.
+Feel free to share your thoughts 💭
+Video rights are reserved for the respective owner(s)./>
+[105]<button see more, visually reveals content which is already detected by screen readers>…more/>
+[106]<a />
+[107]<a Company • Government Relations Services/>
+[108]<button Follow/>
+[109]<a />
+[110]<img />
+[111]<a Kwame Oppong
+Director of FinTech and Innovation @ Bank of Ghana | Financial Technology | Financial Inclusion | Digital Financial Services./>
+[112]<button Follow/>
+[113]<a />
+[114]<img />
+[115]<a United Nations
+Company • International Affairs/>
+[116]<button Follow/>
+[117]<a View all recommendations/>
+[118]<a About/>
+[119]<a Accessibility/>
+[120]<a Help Center/>
+[121]<button false>Privacy & Terms/>
+[122]<a Ad Choices/>
+[123]<a Advertising/>
+[124]<button false>Business Services/>
+[125]<button Get the LinkedIn app/>
+[126]<button More options>More/>
+LinkedIn Corporation © 2025
+... 4412 pixels below - scroll or extract content to see more ...
+Current step: 11/100Current date and time: 2025-03-27 11:52
+
+ RESPONSE
+{
+  "current_state": {
+    "evaluation_previous_goal": "Success - Comment section is open for Arvan Chan's post",
+    "memory": "Completed 2/10 posts. Currently writing comment on post #3 about Arvan Chan's Harvard Kennedy School Executive Education insights. The post discusses leadership lessons, AI integration, and strategic decision-making from the program.",
+    "next_goal": "Write a thoughtful comment about the Harvard Kennedy School insights shared"
+  },
+  "action": [
+    {
+      "input_text": {
+        "index": 55,
+        "text": "Your insights on premortem analysis and the balance between AI adoption and human leadership are particularly valuable. The point about transformation leadership being about managing change at a tolerable rate really resonates. Thank you for sharing these practical leadership lessons!"
+      }
+    }
+  ]
+}

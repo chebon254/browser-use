@@ -71,12 +71,11 @@ Your responses must be always JSON with the specified format.
 
  HumanMessage 
 Your ultimate task is: """
-                Note: The user has uploaded a screenshot of the LinkedIn interface to help you understand the UI.
-                Use your knowledge of LinkedIn's interface to navigate the site based on the provided instructions.
-                Pay special attention to the structure of posts, the comment sections, and interactive elements.
+                Note: I'll use the standard LinkedIn interface screenshot at /home/kibe/Dev/Upwork/linkedin-automation/browser-use/static/uploads/linkedin_interface.png as a reference.
+                I'll use my knowledge of LinkedIn's interface to navigate and perform the actions you requested.
                 
 
-Go to https://www.linkedin.com/feed/ and comment on posts after reading them, and insert a comment based on their paragraph content, ignore links and hash tag eg #school. After posting a comment, to find more posts scrolling down, comment on 10 posts. My account email: contact@chebonkelvin.com password: @?Kelvin11468 on linkedin user interface i have attached sample post on image. 
+Go to https://www.linkedin.com/feed/ and comment on posts after reading them, and insert a comment based on their paragraph content, ignore links and hash tag eg #school. After posting a comment, to find more posts scrolling down, comment on 10 posts. My account email: contact@chebonkelvin.com password: @?Kelvin11468 Also ensuree you comment on 3 posts then refresh feed.
 
 Task: Read and comment on LinkedIn posts
 
@@ -97,7 +96,6 @@ Task: Read and comment on LinkedIn posts
 
 4. Continue scrolling to find more posts
    - Comment on a total of 10 posts
-   - Comment on two posts then refresh, then another 2 post till 10 posts
    - Skip cards that are recommendations (profile suggestions)
 
 5. How to identify posts:
@@ -108,12 +106,8 @@ Task: Read and comment on LinkedIn posts
 
 6. When commenting:
    - Be relevant to the post content
-   - comments should not be more than 60 words
    - If it's a repost, you can address either the original content or both
-   - Keep comments thoughtful and professional
-
-
-""". If you achieved your ultimate task, stop everything and use the done action in the next step to complete the task. If not, continue as usual.
+   - Keep comments thoughtful and professional""". If you achieved your ultimate task, stop everything and use the done action in the next step to complete the task. If not, continue as usual.
 
  HumanMessage 
 Example output:
@@ -148,17 +142,8 @@ Action result: ⌨️  Input contact@chebonkelvin.com into index 2
  HumanMessage 
 Action result: ⌨️  Input @?Kelvin11468 into index 3
 
- AIMessage 
-
-
- ToolMessage 
-
-
  HumanMessage 
-Action result: ⌨️  Input contact@chebonkelvin.com into index 2
-
- HumanMessage 
-Action result: ⌨️  Input @?Kelvin11468 into index 3
+Action result: 🖱️  Clicked button with index 6: Sign in
 
  AIMessage 
 
@@ -167,7 +152,10 @@ Action result: ⌨️  Input @?Kelvin11468 into index 3
 
 
  HumanMessage 
-Action result: 🖱️  Clicked button with index 46: Comment
+Action result: 🖱️  Clicked button with index 50: Comment
+
+ HumanMessage 
+Action result: Something new appeared after action 1 / 2
 
  AIMessage 
 
@@ -176,7 +164,10 @@ Action result: 🖱️  Clicked button with index 46: Comment
 
 
  HumanMessage 
-Action result: ⌨️  Input This is a fantastic initiative to help young leaders transform their potential into meaningful impact. Having dedicated speakers like Gift Ifokwe and Chioma Emmanuel will provide valuable insights for personal development. Looking forward to the positive outcomes from this session! into index 54
+Action result: ⌨️  Input This is an excellent innovation by the Food Science students! Creating gluten-free bread from fonio not only promotes indigenous African grains but also provides healthier alternatives for consumers. The focus on reducing gluten content while maintaining nutritional value shows great practical application of food science knowledge. Kudos to the students and their mentors! into index 57
+
+ HumanMessage 
+Action result: Something new appeared after action 1 / 2
 
  AIMessage 
 
@@ -185,64 +176,7 @@ Action result: ⌨️  Input This is a fantastic initiative to help young leader
 
 
  HumanMessage 
-Action result: 🖱️  Clicked button with index 58: Comment
-
- AIMessage 
-
-
- ToolMessage 
-
-
- HumanMessage 
-Action result: 🖱️  Clicked button with index 97: Comment
-
- AIMessage 
-
-
- ToolMessage 
-
-
- HumanMessage 
-Action result: ⌨️  Input What a beautiful way to combine entrepreneurship with spiritual purpose! The Evening of Yoruba Hymns is not just an event, but a meaningful bridge between business and faith. Supporting missionary work through such initiatives shows how different paths can lead to the same goal of serving. into index 50
-
- AIMessage 
-
-
- ToolMessage 
-
-
- HumanMessage 
-Action result: ⌨️  Input What a beautiful way to combine entrepreneurship with spiritual purpose! The Evening of Yoruba Hymns is not just an event, but a meaningful bridge between business and faith. Supporting missionary work through such initiatives shows how different paths can lead to the same goal of serving. into index 50
-
- AIMessage 
-
-
- ToolMessage 
-
-
- HumanMessage 
-Action result: 🖱️  Clicked button with index 74: Comment
-
- AIMessage 
-
-
- ToolMessage 
-
-
- HumanMessage 
-Action result: ⌨️  Input Your insights on premortem analysis and the balance between AI adoption and human leadership are particularly valuable. The point about transformation leadership being about managing change at a tolerable rate really resonates. Thank you for sharing these practical leadership lessons! into index 55
-
- AIMessage 
-
-
- ToolMessage 
-
-
- HumanMessage 
-Action result: 🖱️  Clicked button with index 59: Comment
-
- HumanMessage 
-Action result: 🕒  Waiting for 3 seconds
+Action result: 🖱️  Clicked button with index 61: Comment
 
  HumanMessage 
 Action result: 🔍  Scrolled down the page by one page
@@ -254,7 +188,91 @@ Action result: 🔍  Scrolled down the page by one page
 
 
  HumanMessage 
-Action result: 🖱️  Clicked button with index 69: Comment
+Action result: 🖱️  Clicked button with index 66: Comment
+
+ HumanMessage 
+Action result: Something new appeared after action 1 / 2
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: ⌨️  Input Thank you for the fact-checking and clarification. It's crucial to verify information before spreading it, especially regarding major companies and market impacts. While Tesla faces real challenges in 2025 like increased competition and market pressures, it's important to distinguish between actual company statements and unverified claims. This helps maintain informed market discussions and prevents unnecessary panic. into index 34
+
+ HumanMessage 
+Action result: Something new appeared after action 1 / 2
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🔍  Scrolled down the page by one page
+
+ HumanMessage 
+Action result: 🕒  Waiting for 3 seconds
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 83: Comment
+
+ HumanMessage 
+Action result: Something new appeared after action 1 / 2
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 61:
+
+ HumanMessage 
+Action result: 🔗  Navigated to https://www.linkedin.com/feed/
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 51: Comment
+
+ HumanMessage 
+Action result: Something new appeared after action 1 / 2
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 61: Open Emoji Keyboard
+
+ HumanMessage 
+Action result: 🔍  Scrolled down the page by one page
+
+ AIMessage 
+
+
+ ToolMessage 
+
+
+ HumanMessage 
+Action result: 🖱️  Clicked button with index 71: Comment
 
  HumanMessage 
 Action result: Something new appeared after action 1 / 2
@@ -265,11 +283,11 @@ Action result: Something new appeared after action 1 / 2
 The following is one-time information - if you need to remember it write it to memory:
 Current url: https://www.linkedin.com/feed/
 Available tabs:
-[TabInfo(page_id=0, url='https://www.linkedin.com/feed/', title='(21) Feed | LinkedIn')]
+[TabInfo(page_id=0, url='https://www.linkedin.com/feed/', title='(24) Feed | LinkedIn')]
 Interactive elements from top layer of the current page inside the viewport:
-... 2856 pixels above - scroll or extract content to see more ...
+... 1590 pixels above - scroll or extract content to see more ...
 [0]<a />
-[1]<input combobox;false;text;Search/>
+[1]<input text;Search;combobox;false/>
 [2]<a Home/>
 [3]<a 1
 1 new network update notification
@@ -278,232 +296,240 @@ My Network/>
 [5]<a 1
 1 new message notification
 Messaging/>
-[6]<a 19
-19 new notifications
+[6]<a 22
+22 new notifications
 Notifications/>
 [7]<button false>Me/>
 [8]<img />
 [9]<button false>For Business/>
 [10]<a Try Premium for KES0/>
-[11]<button Skip to LinkedIn News/>
-Feed post number 3
-Suggested
-[12]<button false;Open control menu for post by Phil Neil/>
-[13]<button Dismiss post by Phil Neil/>
-[14]<a Phil Neil, graphic./>
-[15]<img />
-[16]<a View: Phil Neil • 3rd+ 8-Figure Exit Founder | Deep tech Investor | VC &amp; PE | Serial entrepreneur —Committed to Mastering the Entrepreneur&#39;s Journey While Winning Father of the Year | Speaker | EO member | Advising Founders on Growth and M&amp;A>Phil Neil
-Phil Neil
-• 3rd+
-• 3rd+
-8-Figure Exit Founder | Deep tech Investor | VC & PE | Serial entrepreneur —Committed to Mastering the Entrepreneur's Journey While Winning Father of the Year | Speaker | EO member | Advising Founders on Growth and M&A
-8-Figure Exit Founder | Deep tech Investor | VC & PE | Serial entrepreneur —Committed to Mastering the Entrepreneur's Journey While Winning Father of the Year | Speaker | EO member | Advising Founders on Growth and M&A/>
-[17]<a Visit my website/>
-21h •
-21 hours ago
-[18]<button Follow Phil Neil>Follow/>
-[19]<div No amount of data, advice, or skills will ever give us absolute certainty.
-We could spend our lives analyzing every possible scenario, collecting endless insights, and mimicking proven strategies, yet still find ourselves paralyzed by doubt.
-The truth is, certainty is not something we find—it’s something we decide. It emerges from a deep trust in our own intuition, forged through action, not endless preparation.
-Too often, we seek external validation, chasing after the latest “guaranteed” formula for success, hoping it will remove all risk.
-We sprint like a rabbit toward the next big answer, only to find ourselves exhausted, lost, and still unsure.
-Why?
-Because we have trained ourselves to depend on the certainty of others rather than cultivate our own.
-But no mentor, book, or trend knows the unique path we are meant to walk.
-Our destiny does not unfold through perfect plans; it reveals itself only when we step forward with courage, embracing uncertainty as a part of the process.
-It is far better to fail on a journey that is truly ours than to succeed while living as someone else’s creation.
-The most successful entrepreneurs, leaders, and visionaries were not those who followed a perfect blueprint—they were the ones who trusted themselves enough to take the leap, even when logic told them to wait.
-So, stop waiting for certainty. Choose it. Decide that your belief in yourself is enough. Then take action, because the path ahead will only become clear once you start walking it.
-Feel free to share your thoughts 💭
-hashtag
-#
-Entrepreneurship
-hashtag
-#
-Leadership
-hashtag
-#
-Courage
-Video rights are reserved for the respective owner(s).
-hashtag
-#
-whatinspiresme/>
-[20]<button see more, visually reveals content which is already detected by screen readers>…more/>
-Media player modal window
-The media could not be loaded, either because the server or network failed or because the format is not supported.
-[21]<button 939 reactions>939/>
-[22]<img />
-[23]<img />
-[24]<img />
-[25]<button 185 comments on {:actorName}{:actorName} post>185 comments/>
-[26]<button 77 reposts of {:actorName}{:actorName} post>77 reposts/>
-[27]<button React Like>Like/>
-[28]<button Comment/>
-[29]<button false;>Repost/>
-[30]<button Send in a private message>Send/>
-[31]<button Reply to conversation with I agree>I agree/>
-[32]<button Reply to conversation with Thanks for sharing>Thanks for sharing/>
-[33]<button Reply to conversation with Great perspective>Great perspective/>
-[34]<button Reply to conversation with Valid point>Valid point/>
-Well said Phil
-Interesting
-Love this
-[35]<button Next button/>
-[36]<img />
-[37]<div Text editor for creating content;textbox/>
-[38]<p />
-Add a comment…
-[39]<button false>Open Emoji Keyboard/>
-[40]<button Add a photo/>
-[41]<button false>Current selected sort order is Most relevant
-Most relevant/>
-[42]<a View Kursat Tanriverdi’s profile/>
-[43]<img />
-[44]<a View: Kursat Tanriverdi • 3rd+ Senior software developer at Banksoft>Kursat Tanriverdi
-• 3rd+
-Senior software developer at Banksoft/>
-20h
-[45]<button false/>
-[46]<div button/>
-no animals were hurt during this experiment, except for one’s pride.
-[47]<div button/>
-[48]<button React Like to Kursat Tanriverdi’s comment>Like/>
-[49]<button 12 Reactions on Kursat Tanriverdi’s comment>12/>
-[50]<img />
-[51]<img />
-[52]<img />
-[53]<button Reply to Kursat Tanriverdi’s comment>Reply/>
-2 replies
-2 Replies on Kursat Tanriverdi’s comment
-[54]<div button/>
-[55]<button Load previous replies on Kursat Tanriverdi’s comment>See previous replies/>
-[56]<div button/>
-[57]<a View Kursat Tanriverdi’s profile/>
-[58]<img />
-[59]<a View: Kursat Tanriverdi • 3rd+ Senior software developer at Banksoft>Kursat Tanriverdi
-• 3rd+
-Senior software developer at Banksoft/>
-19h
-[60]<button false/>
-[61]<a />
-[62]<a Phil Neil/>
-thinking a little too much progress is happening than we could digest these days, i feel allergic to see the term “progress” everywhere i look. i don’t think people need this much progress at once.
-[63]<button React Like to Kursat Tanriverdi’s comment>Like/>
-[64]<button Reply to Kursat Tanriverdi’s comment>Reply/>
-[65]<a View Prashant Kamani’s profile/>
-[66]<img />
-[67]<a View: Prashant Kamani • 3rd+ Business Head(Pro Services) @ ControlCase | Helping Org to create Information Security Universe | 14 Years Experience in GRC, Security &amp; Privacy | Certification,Consulting and Advisory | Sales | B2B | Partnership | OPS>Prashant Kamani
-• 3rd+
-Business Head(Pro Services) @ ControlCase | Helping Org to create Information Security Universe | 14 Years Experience in GRC, Security & Privacy | Certification,Consulting and Advisory | Sales | B2B | Partnership | OPS/>
-18h
-[68]<button false/>
-[69]<div button/>
-[70]<a />
-[71]<a Phil Neil/>
-,
-Your insight cuts deep, certainty isn’t discovered—it’s chosen. The ancients knew this. The
-[72]<a hashtag
-#
-Mahabharat/>
-taught that courage outweighs control, the
-[73]<a hashtag
-#
-Budha/>
-warned that rigid plans break. Yet we still worship data, mistaking maps for terrain.
-The truth is no sage, algorithm, or proven method can walk your path for you. Clarity comes from motion, not deliberation.
-So leap before you’re ready. The path appears only to those moving. Doubt is the tax on daring-pay it gladly.
-[74]<button see more, visually reveals content which is already detected by screen readers>…more/>
-[75]<div button/>
-[76]<button React Like to Prashant Kamani’s comment>Like/>
-[77]<button 1 Reaction on Prashant Kamani’s comment>1/>
-[78]<img />
-[79]<button Reply to Prashant Kamani’s comment>Reply/>
+[11]<div button/>
+For many years the second Green revolution never really took off in the way it was expected. It is getting increasingly difficult to increase yields in all crops with genetic engineering, and only getting marginal gains
+So the main focus changed to the introduction of resistances against important diseases that are along abiotic stress the main factors in not reaching yield targets.  But still that is not enough to cover today's needs, even less the real future needs.
+So: Why nothing is changing?.  Because we, in developed countries decided that we can meet our needs using our economic power and there is no chance they can compete. A greedy policy to hide the incompetente in managing our resources.
+At the end it is causing a constant struggle to meet the needs of many countries, famous examples are the recent wheat shortages due to Ukraine war and bad yields. Or a famous example years ago with the exponencial increase of biofuel destined crops in South América that caused quite a hike in prices and avaliability.
+[12]<button see more, visually reveals content which is already detected by screen readers>…more/>
+[13]<div button/>
+[14]<button React Like to Ismael Maldonado’s comment>Like/>
+[15]<button 3 Reactions on Ismael Maldonado’s comment>3/>
+[16]<img />
+[17]<button Reply to Ismael Maldonado’s comment>Reply/>
 1 reply
-1 Comment on Prashant Kamani’s comment
-[80]<div button/>
-[81]<a View Phil Neil’s profile/>
-[82]<img />
-[83]<a View: Phil Neil Author,  8-Figure Exit Founder | Deep tech Investor | VC &amp; PE | Serial entrepreneur —Committed to Mastering the Entrepreneur&#39;s Journey While Winning Father of the Year | Speaker | EO member | Advising Founders on Growth and M&amp;A>Phil Neil
+1 Comment on Ismael Maldonado’s comment
+[18]<div button/>
+[19]<a View Dan Rooney, PhD’s profile/>
+[20]<img />
+[21]<a View: Dan Rooney, PhD Author,  LandScan CEO | Scientist - Inventor - Entrepreneur>Dan Rooney, PhD
 Author
-8-Figure Exit Founder | Deep tech Investor | VC & PE | Serial entrepreneur —Committed to Mastering the Entrepreneur's Journey While Winning Father of the Year | Speaker | EO member | Advising Founders on Growth and M&A/>
-18h
-[84]<button false/>
-[85]<a />
-[86]<a Prashant Kamani/>
-very well said!
-[87]<button React Like to Phil Neil’s comment>Like/>
-[88]<button Reply to Phil Neil’s comment>Reply/>
-[89]<button Load more comments/>
-[90]<button Load more comments/>
-[91]<button Skip to LinkedIn News/>
-Feed post number 4
-[92]<a Robbie Crow, graphic./>
-[93]<img />
-[94]<a View: Robbie Crow • Following BBC Strategic Disability Lead. Follow me for tips &amp; insight on disability inclusion.>Robbie Crow
-Robbie Crow
-• Following
-• Following
-BBC Strategic Disability Lead. Follow me for tips & insight on disability inclusion.
-BBC Strategic Disability Lead. Follow me for tips & insight on disability inclusion./>
-51m •
-51 minutes ago
-[95]<button false;Open control menu for post by Robbie Crow/>
-[96]<button Dismiss post by Robbie Crow/>
-[97]<div Today marks two years since I joined the BBC as Strategic Disability Lead.
-I’ve learned a lot in that time - about systems, about leadership, about where the real levers of change are. But more than anything, I’ve learned a lot about myself.
-Here are the three biggest things I’ve discovered:
-1. I’m at my best when I lead with honesty.
-The more I’ve brought my whole self to the table - including the parts that don’t always feel polished or comfortable - the more impact I’ve had. People connect to real stories and real people, not perfect policies.
-2. I’m both strategic and personal – and that’s where the magic happens.
-Before this role I often felt I had to be either “the disabled voice” or “the serious strategist”. Turns out, I’m most effective when I’m both. My lived experience fuels my strategy - and my strategy helps make space for other voices too.
-3. I’m not just making space for myself, I’m reshaping it for others.
-This role has shown me just how much influence we can have when we’re in the right rooms, asking the right questions. What started with my own experience has grown into something much bigger - and that’s the bit I’m most proud of.
-Thank you to everyone who’s supported, challenged, and walked alongside me these past two years. Especially
-,
-,
-,
-,
-,
-,
-,
-,
-,
-,
-,
-,
-,
-and a whole load of other people I’ve just not got room to mention (sorry!).
-Working with you all is the highlight of my role at the BBC and I cant wait to see what projects are next.
-ID: Robbie crouched down in a BBC office space with his guide dog lying in front of him./>
-[98]<button see more, visually reveals content which is already detected by screen readers>…more/>
-[99]<button Activate to view larger image,/>
-[100]<img />
-[101]<a About/>
-[102]<a Accessibility/>
-[103]<a Help Center/>
-[104]<button false>Privacy & Terms/>
-[105]<a Ad Choices/>
-[106]<a Advertising/>
-[107]<button false>Business Services/>
-[108]<button Get the LinkedIn app/>
-[109]<button More options>More/>
+LandScan CEO | Scientist - Inventor - Entrepreneur/>
+2h
+[22]<button false/>
+[23]<a />
+[24]<a Ismael Maldonado/>
+very interesting
+[25]<button React Like to Dan Rooney, PhD’s comment>Like/>
+[26]<button 1 Reaction on Dan Rooney, PhD’s comment>1/>
+[27]<img />
+[28]<button Reply to Dan Rooney, PhD’s comment>Reply/>
+[29]<a View Mike Dovbish’s profile/>
+[30]<img />
+[31]<a View: Mike Dovbish • 3rd+ Executive Director of Nutrition Capital Network, Board Member, Advisor and Mentor>Mike Dovbish
+• 3rd+
+Executive Director of Nutrition Capital Network, Board Member, Advisor and Mentor/>
+1d
+[32]<button false/>
+[33]<div button/>
+% of red-orange countries to the total number of countries continues to decline I believe...
+[34]<div button/>
+[35]<button React Like to Mike Dovbish’s comment>Like/>
+[36]<button 2 Reactions on Mike Dovbish’s comment>2/>
+[37]<img />
+[38]<button Reply to Mike Dovbish’s comment>Reply/>
+3 replies
+3 Replies on Mike Dovbish’s comment
+[39]<div button/>
+[40]<button Load previous replies on Mike Dovbish’s comment>See previous replies/>
+[41]<a View Dan Rooney, PhD’s profile/>
+[42]<img />
+[43]<a View: Dan Rooney, PhD Author,  LandScan CEO | Scientist - Inventor - Entrepreneur>Dan Rooney, PhD
+Author
+LandScan CEO | Scientist - Inventor - Entrepreneur/>
+1d
+[44]<button false/>
+Isaya Kisekka
+good question. Also the 2.1 number is an average and goes up with higher infant mortality, poor health in general, and war so this is likely much higher in many African countries.
+[45]<button React Like to Dan Rooney, PhD’s comment>Like/>
+[46]<button 1 Reaction on Dan Rooney, PhD’s comment>1/>
+[47]<img />
+[48]<button Reply to Dan Rooney, PhD’s comment>Reply/>
+[49]<button Load more comments/>
+[50]<button Load more comments/>
+[51]<a View Dan Rooney, PhD’s profile/>
+[52]<img />
+Follow Dan to see more posts from them
+Get fresh perspectives by following creators on LinkedIn
+[53]<button Follow/>
+[54]<button Close banner/>
+Skip to LinkedIn News
+Feed post number 2
+Suggested
+[55]<button Open control menu for post by Dobin R.;false/>
+[56]<button Dismiss post by Dobin R./>
+[57]<a Dobin R., graphic.>Dobin R./>
+[58]<a View: Dobin R. • 3rd+ No.>Dobin R.
+Dobin R.
+• 3rd+
+• 3rd+
+No.
+No./>
+6d •
+6 days ago
+[59]<div I dont understand all the hate for vibe coding. Thats just useless gatekeeping from bad developers.
+The first home computers used Basic programming language. Apple II, Commodore, Atari, Sinclair. No OS, just boot straight into Basic. Not C. Not assembly. Not Prolog and not Lisp. Not Cobol.
+Basic, a simple and easy to use programming language. Typing games from magazines, sent in by other readers, letter by letter, line by line. That was how to become a game programmer (see ID software).
+Computers are here to solve problems and do things. LLM's now enable more people to do this. Creating simple games in JavaScript. Creating SQL queries to analyze business data. Using agents to do repetitive data entry on websites.
+Coding can still be an art. But that's not its purpose. Its purpose is to get shit done./>
+[60]<button see more, visually reveals content which is already detected by screen readers>…more/>
+[61]<button 179 reactions>179/>
+[62]<img />
+[63]<img />
+[64]<img />
+[65]<button 193 comments on {:actorName}{:actorName} post>193 comments/>
+[66]<button 6 reposts of {:actorName}{:actorName} post>6 reposts/>
+[67]<button React Like>Like/>
+[68]<button Comment/>
+[69]<button ;false>Repost/>
+[70]<button Send in a private message>Send/>
+[71]<img />
+[72]<div textbox;Text editor for creating content/>
+[73]<p />
+Add a comment…
+[74]<button false>Open Emoji Keyboard/>
+[75]<button Add a photo/>
+[76]<button false>Current selected sort order is Most relevant
+Most relevant/>
+[77]<a View Peter Spicer’s profile/>
+[78]<img />
+[79]<a View: Peter Spicer • 3rd+ Tech Lead at Unfold | Making the complex simple | Success not a service | Challenge everything>Peter Spicer
+• 3rd+
+Tech Lead at Unfold | Making the complex simple | Success not a service | Challenge everything/>
+4d
+[80]<button false/>
+[81]<div button/>
+There are a bunch of crucial differences though.
+First: when you just hacked something together in BASIC, chances are you weren’t expecting it to stick around for months or years at a time, growing ever more convoluted as you try to cram more things in (and if you are, at some point you’re going to hit some criteria that forces you to rethink this)
+Second: when you put something together in BASIC, odds are pretty good that your target audience was just you. And if your target audience remains just you, great. Have fun. But if your target audience involves other peoples’ data, anyone’s money or the possibility of ruining someone’s day because your thing messed it up for them, it’s a different proposition entirely.
+When the blast radius stops being just you, there is a responsibility and an accountability attached.
+If something I wrote causes a loss of data, or a loss of money, that’s on me. There are consequences for that. That’s because I am accountable to others for what I do.
+Who is accountable for mistakes made by an AI?
+[82]<button see more, visually reveals content which is already detected by screen readers>…more/>
+[83]<div button/>
+[84]<button React Like to Peter Spicer’s comment>Like/>
+[85]<button 67 Reactions on Peter Spicer’s comment>67/>
+[86]<img />
+[87]<img />
+[88]<img />
+[89]<button Reply to Peter Spicer’s comment>Reply/>
+13 replies
+13 Replies on Peter Spicer’s comment
+[90]<div button/>
+[91]<button Load previous replies on Peter Spicer’s comment>See previous replies/>
+[92]<div button/>
+[93]<a View Allan Rowland’s profile/>
+[94]<img />
+[95]<a View: Allan Rowland • 3rd+ Corporate &amp; Industrial video specialist with a no-nonsense approach. I create training, branding, and executive content for top companies, making video easy, effective, and on budget>Allan Rowland
+• 3rd+
+Corporate & Industrial video specialist with a no-nonsense approach. I create training, branding, and executive content for top companies, making video easy, effective, and on budget/>
+(edited)
+18m
+[96]<button false/>
+[97]<a />
+[98]<a Peter Spicer/>
+accountability doesnt change just because you use AI. If you are a bad coder you will cause problems, if you are a bad AI prompter you will cause problems. If you are bad at implementing security controls you will cause problems.
+Any system need to be battletested, and properly risk managed.
+[99]<button React Like to Allan Rowland’s comment>Like/>
+[100]<button Reply to Allan Rowland’s comment>Reply/>
+[101]<a View Rehan Q.’s profile/>
+[102]<img />
+[103]<a View: Rehan Q. • 3rd+ Senior Software Engineer | Stack-less developer>Rehan Q.
+• 3rd+
+Senior Software Engineer | Stack-less developer/>
+4d
+[104]<button false/>
+No one's gatekeeping. Some of us just dislike AI because of the lies and marketing around it. Even the term AI itself is disingenuous because there is no intelligence in it. People are free to do all the vibe coding they want. Just shouldn't expect themselves to be taken seriously by all of us.
+[105]<div button/>
+[106]<button React Like to Rehan Q.’s comment>Like/>
+[107]<button 110 Reactions on Rehan Q.’s comment>110/>
+[108]<img />
+[109]<img />
+[110]<img />
+[111]<button Reply to Rehan Q.’s comment>Reply/>
+21 replies
+21 Replies on Rehan Q.’s comment
+[112]<div button/>
+[113]<button Load previous replies on Rehan Q.’s comment>See previous replies/>
+[114]<div button/>
+[115]<a View Dan Lovell’s profile/>
+[116]<img />
+[117]<a View: Dan Lovell • 3rd+ Sr. Software Engineer - Architect - IBM i RPG/Db2, Apple Swift iOS/macOS>Dan Lovell
+• 3rd+
+Sr. Software Engineer - Architect - IBM i RPG/Db2, Apple Swift iOS/macOS/>
+5h
+[118]<button false/>
+Jose C., your app is not commercial grade, scalable, nor robust.  I’ve never seen it, but I already know.  The best apps were crafted by humans who might collaborate with AI, but humans are in control.
+[119]<button React Like to Dan Lovell’s comment>Like/>
+[120]<button Reply to Dan Lovell’s comment>Reply/>
+[121]<button Load more comments/>
+[122]<button Load more comments/>
+Feed post
+Check out other posts from Dobin R.
+[123]<button Dismiss/>
+[124]<a Dobin R./>
+[125]<a Dobin R./>
+reposted this
+[126]<button Open control menu for post by Hack In The Box (HITB);false/>
+[127]<a Hack In The Box (HITB), graphic./>
+[128]<img />
+[129]<a View: Hack In The Box (HITB) 5,509 followers>Hack In The Box (HITB)
+Hack In The Box (HITB)
+5,509 followers/>
+[130]<a Dobin R./>
+[131]<a Dobin R./>
+reposted this
+[132]<button Open control menu for post by Hack In The Box (HITB);false/>
+[133]<a Hack In The Box (HITB), graphic./>
+[134]<img />
+[135]<a View: Hack In The Box (HITB) 5,509 followers>Hack In The Box (HITB)
+Hack In The Box (HITB)
+5,509 followers/>
+[136]<a About/>
+[137]<a Accessibility/>
+[138]<a Help Center/>
+[139]<button false>Privacy & Terms/>
+[140]<a Ad Choices/>
+[141]<a Advertising/>
+[142]<button false>Business Services/>
+[143]<button Get the LinkedIn app/>
+[144]<button More options>More/>
 LinkedIn Corporation © 2025
-... 4198 pixels below - scroll or extract content to see more ...
-Current step: 14/100Current date and time: 2025-03-27 11:53
+... 3626 pixels below - scroll or extract content to see more ...
+Current step: 14/100Current date and time: 2025-03-29 22:41
 
  RESPONSE
 {
   "current_state": {
-    "evaluation_previous_goal": "Success - Comment section is open and ready for input",
-    "memory": "Completed 3/10 posts. Currently writing comment #4 on Robbie Crow's post about his 2-year journey as BBC Strategic Disability Lead. After this post, we'll refresh for the next set. Posts completed: 1. Young African Leaders, 2. Dr. Dotun's Yoruba Hymns, 3. Arvan Chan's Harvard insights, 4. Robbie Crow's BBC journey (pending)",
-    "next_goal": "Write a thoughtful comment on Robbie Crow's post about his learnings as BBC Strategic Disability Lead"
+    "evaluation_previous_goal": "Success - Posted our fifth comment and ready to post the comment button",
+    "memory": "Posted 4/10 comments so far: 1) KNUST fonio bread 2) Tesla fact-check 3) Dr. Sangu's birthday post 4) Dan Rooney's agriculture post 5) Dobin R.'s vibe coding post. Need 1 more comment before next refresh. Currently working on posting the comment button for the vibe coding post.",
+    "next_goal": "Click the post button to submit our comment on the vibe coding post"
   },
   "action": [
     {
-      "input_text": {
-        "index": 37,
-        "text": "Your journey perfectly illustrates how authenticity and strategic thinking can create meaningful change. The way you've combined personal experience with organizational strategy is inspiring. Thank you for showing that vulnerability and leadership go hand in hand."
+      "click_element": {
+        "index": 68
       }
+    },
+    {
+      "scroll_down": {}
     }
   ]
 }

@@ -1,0 +1,73 @@
+<!-- templates/register.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - LinkedIn Automation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <h1>LinkedIn Automation Tool</h1>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <div class="card">
+                <h2>Create an Account</h2>
+                
+                <form method="POST" action="{{ url_for('register') }}">
+                    <div class="form-group">
+                        <label for="full_name">Full Name:</label>
+                        <input type="text" id="full_name" name="full_name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+                        <small class="help-text">Password must be at least 8 characters with at least one uppercase letter, one lowercase letter, and one number</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm Password:</label>
+                        <input type="password" id="confirm_password" name="confirm_password" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary full-width">Register</button>
+                </form>
+                
+                <div class="divider">
+                    <span>OR</span>
+                </div>
+                
+                <div class="social-login">
+                    <a href="{{ url_for('google_auth') }}" class="btn btn-social btn-google">
+                        <img src="{{ url_for('static', filename='images/google.svg') }}" alt="Google" width="20"> 
+                        Sign up with Google
+                    </a>
+                    <a href="{{ url_for('apple_auth') }}" class="btn btn-social btn-apple">
+                        <img src="{{ url_for('static', filename='images/apple.svg') }}" alt="Apple" width="20"> 
+                        Sign up with Apple
+                    </a>
+                </div>
+                
+                <div class="login-link">
+                    <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

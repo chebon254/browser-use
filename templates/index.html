@@ -4,11 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkedIn Automation</title>
+    <title>Dashboard - LinkedIn Automation</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
+        {% include 'navbar.html' %}
+        
         <h1>LinkedIn Automation Tool</h1>
         
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -19,64 +22,134 @@
             {% endif %}
         {% endwith %}
         
-        <div class="card">
-            <h2>Enter Automation Prompt</h2>
-            <p class="description">
-                Enter instructions for the AI to follow when interacting with LinkedIn. 
-                Be specific about what you want it to do.
-            </p>
-            
-            <form method="POST" action="{{ url_for('index') }}" enctype="multipart/form-data" id="automation-form">
-                <div class="form-group">
-                    <label for="prompt">Automation Prompt:</label>
-                    <textarea 
-                        id="prompt" 
-                        name="prompt" 
-                        rows="5" 
-                        placeholder="Example: Go to LinkedIn and connect with 5 people in my industry"
-                        required
-                    ></textarea>
-                </div>
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2>Run LinkedIn Automation</h2>
+                <p class="description">
+                    Select a prompt or create your own to automate actions on LinkedIn.
+                </p>
                 
-                <div class="form-group">
-                    <label for="linkedin_image">Upload LinkedIn UI Image (Optional):</label>
-                    <div class="file-input-container">
-                        <input 
-                            type="file" 
-                            id="linkedin_image" 
-                            name="linkedin_image" 
-                            accept="image/*"
-                        >
-                        <p class="file-help">Upload a screenshot of LinkedIn UI to help AI understand the interface</p>
+                <form method="POST" action="{{ url_for('dashboard') }}" enctype="multipart/form-data" id="automation-form">
+                    <div class="prompt-selection">
+                        <h3>Sample Prompts:</h3>
+                        <div class="sample-prompts-container">
+                            {% for prompt in sample_prompts %}
+                            <div class="prompt-item">
+                                <input type="radio" name="selected_prompt" id="prompt-{{ prompt.id }}" value="{{ prompt.id }}" class="prompt-radio">
+                                <label for="prompt-{{ prompt.id }}" class="prompt-label">
+                                    <div class="prompt-text">{{ prompt.prompt_text }}</div>
+                                    <div class="prompt-actions">
+                                        <button type="button" class="btn-edit" onclick="editPrompt('{{ prompt.prompt_text }}')">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                    </div>
+                                </label>
+                            </div>
+                            {% endfor %}
+                            
+                            {% if user_prompts %}
+                            <h3>Your Saved Prompts:</h3>
+                            {% for prompt in user_prompts %}
+                            <div class="prompt-item">
+                                <input type="radio" name="selected_prompt" id="prompt-{{ prompt.id }}" value="{{ prompt.id }}" class="prompt-radio">
+                                <label for="prompt-{{ prompt.id }}" class="prompt-label">
+                                    <div class="prompt-text">{{ prompt.prompt_text }}</div>
+                                    <div class="prompt-actions">
+                                        <button type="button" class="btn-edit" onclick="editPrompt('{{ prompt.prompt_text }}')">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button type="button" class="btn-delete" onclick="deletePrompt('{{ prompt.id }}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </label>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                        
+                        <div class="custom-prompt-container" id="custom-prompt-container" style="display: none;">
+                            <div class="form-group">
+                                <label for="custom_prompt">Custom Prompt:</label>
+                                <textarea 
+                                    id="custom_prompt"
+                                    name="custom_prompt" 
+                                    rows="5" 
+                                    placeholder="Enter instructions for the AI to follow when interacting with LinkedIn."
+                                ></textarea>
+                                <div class="prompt-actions">
+                                    <button type="button" class="btn btn-secondary btn-save-prompt" onclick="saveCustomPrompt()">
+                                        <i class="fas fa-save"></i> Save Prompt
+                                    </button>
+                                    <button type="button" class="btn btn-secondary btn-cancel" onclick="cancelCustomPrompt()">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn btn-secondary btn-create-prompt" onclick="showCustomPrompt()">
+                            <i class="fas fa-plus"></i> Create Custom Prompt
+                        </button>
                     </div>
-                </div>
-                
-                <div class="image-preview-container" id="preview-container" style="display: none;">
-                    <img id="image-preview" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">
-                </div>
-                
-                <div class="automation-status" id="automation-status" style="display: none;">
-                    <div class="status-spinner"></div>
-                    <p class="status-message">Running LinkedIn automation... This may take several minutes. Please wait.</p>
-                </div>
-                
-                <button type="submit" class="btn btn-primary" id="submit-button">
-                    <span class="btn-text">Run Automation</span>
-                    <span class="spinner"></span>
-                </button>
-            </form>
+                    
+                    <div class="form-group">
+                        <label for="linkedin_image">Upload LinkedIn UI Image (Optional):</label>
+                        <div class="file-input-container">
+                            <input 
+                                type="file" 
+                                id="linkedin_image" 
+                                name="linkedin_image" 
+                                accept="image/*"
+                            >
+                            <p class="file-help">Upload a screenshot of LinkedIn UI to help AI understand the interface</p>
+                        </div>
+                    </div>
+                    
+                    <div class="image-preview-container" id="preview-container" style="display: none;">
+                        <img id="image-preview" src="#" alt="Preview">
+                    </div>
+                    
+                    <div class="automation-status" id="automation-status" style="display: none;">
+                        <div class="status-spinner"></div>
+                        <p class="status-message">Running LinkedIn automation... This may take several minutes. Please wait.</p>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="submit-button">
+                        <span class="btn-text">Run Automation</span>
+                        <span class="spinner"></span>
+                    </button>
+                </form>
+            </div>
             
-            <div class="examples">
-                <h3>Sample Prompts:</h3>
-                <ul>
-                    {% for prompt in sample_prompts %}
-                    <li>
-                        <a href="#" class="sample-prompt" onclick="fillPrompt(this); return false;">
-                            {{ prompt }}
-                        </a>
-                    </li>
+            <div class="card history-card">
+                <h2>Recent Automation History</h2>
+                
+                {% if history %}
+                <div class="history-list">
+                    {% for item in history %}
+                    <div class="history-item status-{{ item.status }}">
+                        <div class="history-time">{{ item.started_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                        <div class="history-prompt">{{ item.prompt_text[:100] }}{% if item.prompt_text|length > 100 %}...{% endif %}</div>
+                        <div class="history-status">
+                            <span class="status-badge badge-{{ item.status }}">{{ item.status }}</span>
+                        </div>
+                        <div class="history-result">
+                            {% if item.result_message %}
+                            <details>
+                                <summary>Result</summary>
+                                <div class="result-message">{{ item.result_message }}</div>
+                            </details>
+                            {% else %}
+                            <span class="no-result">No result available</span>
+                            {% endif %}
+                        </div>
+                    </div>
                     {% endfor %}
-                </ul>
+                </div>
+                {% else %}
+                <p class="no-history">No automation history yet</p>
+                {% endif %}
             </div>
         </div>
         
@@ -90,10 +163,59 @@
         </div>
     </div>
     
+    <!-- Hidden form for deleting prompts -->
+    <form id="delete-prompt-form" method="POST" style="display: none;"></form>
+    
+    <!-- Hidden form for saving prompts -->
+    <form id="save-prompt-form" method="POST" action="{{ url_for('save_prompt') }}" style="display: none;">
+        <input type="hidden" name="prompt_text" id="save-prompt-text">
+    </form>
+    
     <script>
-        // Function to fill the prompt textarea with sample text
-        function fillPrompt(element) {
-            document.getElementById('prompt').value = element.innerText;
+        // Show the custom prompt editor
+        function showCustomPrompt() {
+            document.getElementById('custom-prompt-container').style.display = 'block';
+            document.querySelector('.btn-create-prompt').style.display = 'none';
+            
+            // Uncheck any selected prompt
+            const radioButtons = document.querySelectorAll('.prompt-radio');
+            radioButtons.forEach(radio => {
+                radio.checked = false;
+            });
+        }
+        
+        // Edit a prompt
+        function editPrompt(promptText) {
+            document.getElementById('custom_prompt').value = promptText;
+            showCustomPrompt();
+        }
+        
+        // Cancel custom prompt
+        function cancelCustomPrompt() {
+            document.getElementById('custom-prompt-container').style.display = 'none';
+            document.querySelector('.btn-create-prompt').style.display = 'block';
+            document.getElementById('custom_prompt').value = '';
+        }
+        
+        // Delete a prompt
+        function deletePrompt(promptId) {
+            if (confirm('Are you sure you want to delete this prompt?')) {
+                const form = document.getElementById('delete-prompt-form');
+                form.action = `/delete-prompt/${promptId}`;
+                form.submit();
+            }
+        }
+        
+        // Save custom prompt
+        function saveCustomPrompt() {
+            const promptText = document.getElementById('custom_prompt').value;
+            if (promptText.trim() === '') {
+                alert('Please enter a prompt');
+                return;
+            }
+            
+            document.getElementById('save-prompt-text').value = promptText;
+            document.getElementById('save-prompt-form').submit();
         }
         
         // Image preview functionality
@@ -116,8 +238,13 @@
         
         // Show loading spinner and status message when form is submitted
         document.getElementById('automation-form').addEventListener('submit', function(e) {
-            // Validate form first
-            if (!this.checkValidity()) {
+            // Check if a prompt is selected or entered
+            const selectedPrompt = document.querySelector('.prompt-radio:checked');
+            const customPrompt = document.getElementById('custom_prompt').value;
+            
+            if (!selectedPrompt && customPrompt.trim() === '') {
+                e.preventDefault();
+                alert('Please select a prompt or create a custom one');
                 return;
             }
             
@@ -129,8 +256,6 @@
             button.classList.add('loading');
             button.querySelector('.btn-text').innerText = 'Running Automation...';
             button.disabled = true;
-            
-            // Let the form submit and page refresh
         });
     </script>
 </body>

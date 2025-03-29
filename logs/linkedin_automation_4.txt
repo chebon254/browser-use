@@ -71,49 +71,11 @@ Your responses must be always JSON with the specified format.
 
  HumanMessage 
 Your ultimate task is: """
-                Note: The user has uploaded a screenshot of the LinkedIn interface to help you understand the UI.
-                Use your knowledge of LinkedIn's interface to navigate the site based on the provided instructions.
-                Pay special attention to the structure of posts, the comment sections, and interactive elements.
+                Note: I'll use the standard LinkedIn interface screenshot at /home/kibe/Dev/Upwork/linkedin-automation/browser-use/static/uploads/linkedin_interface.png as a reference.
+                I'll use my knowledge of LinkedIn's interface to navigate and perform the actions you requested.
                 
 
-Go to https://www.linkedin.com/feed/ and comment on posts after reading them, and insert a comment based on their paragraph content, ignore links and hash tag eg #school. After posting a comment, to find more posts scrolling down, comment on 10 posts. My account email: contact@chebonkelvin.com password: @?Kelvin11468 on linkedin user interface i have attached sample post on image. 
-
-Task: Read and comment on LinkedIn posts
-
-1. Navigate to LinkedIn feed: https://www.linkedin.com/feed/
-
-2. For each post:
-   - Look for the post content (paragraph text)
-   - Click "...more" if available to read the full content
-   - Ignore hashtags and links when formulating your comment
-   - Write a relevant comment based on the post's text content
-   - Click the "Comment" button to submit
-
-3. Comment process:
-   - Find the comment section (look for [icon-text(comment)])
-   - Click to expand the comment area
-   - Type your comment in the input field with placeholder "Add a comment"
-   - Click the "Comment" button that appears
-
-4. Continue scrolling to find more posts
-   - Comment on a total of 10 posts
-   - Comment on two posts then refresh, then another 2 post till 10 posts
-   - Skip cards that are recommendations (profile suggestions)
-
-5. How to identify posts:
-   - Posts have reaction options at the bottom ([icon-text(like)]-[icon-text(comment)])
-   - Posts typically have paragraphs of text (1-3 lines)
-   - Posts may include media (images/videos)
-   - Some posts may be reposts (showing two profile details)
-
-6. When commenting:
-   - Be relevant to the post content
-   - comments should not be more than 60 words
-   - If it's a repost, you can address either the original content or both
-   - Keep comments thoughtful and professional
-
-
-""". If you achieved your ultimate task, stop everything and use the done action in the next step to complete the task. If not, continue as usual.
+go youtube and watch a video, any video, or search for germany lessons""". If you achieved your ultimate task, stop everything and use the done action in the next step to complete the task. If not, continue as usual.
 
  HumanMessage 
 Example output:
@@ -134,7 +96,7 @@ Browser started
 
 
  HumanMessage 
-Action result: 🔗  Navigated to https://www.linkedin.com/feed/
+Action result: 🔗  Navigated to https://www.youtube.com
 
  AIMessage 
 
@@ -143,33 +105,91 @@ Action result: 🔗  Navigated to https://www.linkedin.com/feed/
 
 
  HumanMessage 
-Action result: ⌨️  Input contact@chebonkelvin.com into index 2
+Action result: ⌨️  Input german lessons into index 3
 
  HumanMessage 
-Action result: ⌨️  Input @?Kelvin11468 into index 3
+Action result: Something new appeared after action 1 / 2
 
  HumanMessage 
 [Task history memory ends]
 [Current state starts here]
 The following is one-time information - if you need to remember it write it to memory:
-Current url: https://www.linkedin.com/feed/
+Current url: https://www.youtube.com/
 Available tabs:
-[TabInfo(page_id=0, url='https://www.linkedin.com/feed/', title='(21) Feed | LinkedIn')]
+[TabInfo(page_id=0, url='https://www.youtube.com/', title='YouTube')]
 Interactive elements from top layer of the current page inside the viewport:
-empty page
-Current step: 3/100Current date and time: 2025-03-27 11:48
+[Start of page]
+[0]<button Guide/>
+[1]<a YouTube Home/>
+KE
+[2]<div />
+[3]<input text;combobox;search_query;true;Search/>
+[4]<button Clear search query/>
+[5]<button Search/>
+[6]<div listbox/>
+[7]<div option;german lessons for beginners>german lessons
+for beginners/>
+[8]<div option>german lessons/>
+[9]<div option;german lessons for beginners a1>german lessons
+for beginners a1/>
+[10]<div option;german lessons b1>german lessons
+b1/>
+[11]<div german lessons for beginners conversations;option>german lessons
+for beginners conversations/>
+[12]<div option;german lessons a2>german lessons
+a2/>
+[13]<div german lessons for kids;option>german lessons
+for kids/>
+[14]<div option;german lessons b2>german lessons
+b2/>
+[15]<div german lessons a1.2;option>german lessons
+a1.2/>
+[16]<div german lessons with anja;option>german lessons
+with anja/>
+[17]<div option;german lessons for beginners lesson 1>german lessons
+for beginners lesson 1/>
+[18]<div german lessons verbs;option>german lessons
+verbs/>
+[19]<div option;german lessons 1>german lessons
+1/>
+[20]<div german lessons alphabet;option>german lessons
+alphabet/>
+[21]<button Report search predictions/>
+[22]<button Search with your voice/>
+[23]<a />
+[24]<button Settings/>
+[25]<a Sign in/>
+[26]<ytd-mini-guide-entry-renderer Home;tab/>
+[27]<a Home>Home
+Home/>
+[28]<ytd-mini-guide-entry-renderer tab;Shorts/>
+[29]<a Shorts>Shorts
+Shorts/>
+[30]<ytd-mini-guide-entry-renderer tab;Subscriptions/>
+[31]<a Subscriptions>Subscriptions
+Subscriptions/>
+[32]<ytd-mini-guide-entry-renderer You;tab/>
+[33]<a You>You
+You/>
+[34]<ytd-mini-guide-entry-renderer History;tab/>
+[35]<a History>History
+History/>
+Try searching to get started
+Start watching videos to help us build a feed of videos you'll love.
+[End of page]
+Current step: 3/100Current date and time: 2025-03-29 22:48
 
  RESPONSE
 {
   "current_state": {
-    "evaluation_previous_goal": "Success - We have reached the LinkedIn feed page and I can see a post to interact with",
-    "memory": "Need to comment on 10 posts total (0/10 completed). Currently looking at a post from Young African Leaders for Global Impact about a youth event. Plan to comment on 2 posts at a time, then refresh.",
-    "next_goal": "Click on the comment button to open the comment section for this post"
+    "evaluation_previous_goal": "Success - Search suggestions for German lessons appeared",
+    "memory": "On YouTube with search suggestions for German lessons displayed. Will select a beginner lesson to watch. Step 3/100.",
+    "next_goal": "Click on 'German lessons for beginners' suggestion to start watching a lesson"
   },
   "action": [
     {
       "click_element": {
-        "index": 1004
+        "index": 7
       }
     }
   ]

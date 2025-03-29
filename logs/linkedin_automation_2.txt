@@ -71,49 +71,11 @@ Your responses must be always JSON with the specified format.
 
  HumanMessage 
 Your ultimate task is: """
-                Note: The user has uploaded a screenshot of the LinkedIn interface to help you understand the UI.
-                Use your knowledge of LinkedIn's interface to navigate the site based on the provided instructions.
-                Pay special attention to the structure of posts, the comment sections, and interactive elements.
+                Note: I'll use the standard LinkedIn interface screenshot at /home/kibe/Dev/Upwork/linkedin-automation/browser-use/static/uploads/linkedin_interface.png as a reference.
+                I'll use my knowledge of LinkedIn's interface to navigate and perform the actions you requested.
                 
 
-Go to https://www.linkedin.com/feed/ and comment on posts after reading them, and insert a comment based on their paragraph content, ignore links and hash tag eg #school. After posting a comment, to find more posts scrolling down, comment on 10 posts. My account email: contact@chebonkelvin.com password: @?Kelvin11468 on linkedin user interface i have attached sample post on image. 
-
-Task: Read and comment on LinkedIn posts
-
-1. Navigate to LinkedIn feed: https://www.linkedin.com/feed/
-
-2. For each post:
-   - Look for the post content (paragraph text)
-   - Click "...more" if available to read the full content
-   - Ignore hashtags and links when formulating your comment
-   - Write a relevant comment based on the post's text content
-   - Click the "Comment" button to submit
-
-3. Comment process:
-   - Find the comment section (look for [icon-text(comment)])
-   - Click to expand the comment area
-   - Type your comment in the input field with placeholder "Add a comment"
-   - Click the "Comment" button that appears
-
-4. Continue scrolling to find more posts
-   - Comment on a total of 10 posts
-   - Comment on two posts then refresh, then another 2 post till 10 posts
-   - Skip cards that are recommendations (profile suggestions)
-
-5. How to identify posts:
-   - Posts have reaction options at the bottom ([icon-text(like)]-[icon-text(comment)])
-   - Posts typically have paragraphs of text (1-3 lines)
-   - Posts may include media (images/videos)
-   - Some posts may be reposts (showing two profile details)
-
-6. When commenting:
-   - Be relevant to the post content
-   - comments should not be more than 60 words
-   - If it's a repost, you can address either the original content or both
-   - Keep comments thoughtful and professional
-
-
-""". If you achieved your ultimate task, stop everything and use the done action in the next step to complete the task. If not, continue as usual.
+go youtube and watch a video, any video, or search for germany lessons""". If you achieved your ultimate task, stop everything and use the done action in the next step to complete the task. If not, continue as usual.
 
  HumanMessage 
 Example output:
@@ -136,19 +98,19 @@ Available tabs:
 [TabInfo(page_id=0, url='about:blank', title='')]
 Interactive elements from top layer of the current page inside the viewport:
 empty page
-Current step: 1/100Current date and time: 2025-03-27 11:47
+Current step: 1/100Current date and time: 2025-03-29 22:48
 
  RESPONSE
 {
   "current_state": {
-    "evaluation_previous_goal": "Unknown - Starting fresh with the task",
-    "memory": "Starting the LinkedIn commenting task. Need to login first with email: contact@chebonkelvin.com and password: @?Kelvin11468. Will need to comment on 10 posts total (0/10 completed). Plan to comment on 2 posts at a time, then refresh.",
-    "next_goal": "Navigate to LinkedIn feed page to begin the task"
+    "evaluation_previous_goal": "Unknown - Starting fresh with a blank page",
+    "memory": "Starting the task to go to YouTube and watch a video or search for German lessons. Step 1/100.",
+    "next_goal": "Navigate to YouTube website"
   },
   "action": [
     {
       "go_to_url": {
-        "url": "https://www.linkedin.com/feed/"
+        "url": "https://www.youtube.com"
       }
     }
   ]

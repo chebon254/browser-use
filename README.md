@@ -1,249 +1,134 @@
-# LinkedIn Automation Tool
+# LinkedIn Automation Tool - Setup Instructions
 
-A web application that uses Browser Use and Anthropic AI to automate LinkedIn interactions based on natural language prompts.
-
-## Features
-
-- Simple web interface for entering automation prompts
-- Run browser automations with a single click
-- View detailed results including screenshots
-- Sample prompts for common LinkedIn tasks
+This document provides instructions for setting up the LinkedIn Automation Tool with user authentication and database integration.
 
 ## Prerequisites
 
-- Python 3.11 or higher
-- Anthropic API key (Claude model)
-- Modern web browser
+1. Python 3.8+
+2. MySQL Server
+3. Anthropic API key (for Claude)
+4. SMTP server access (for password reset emails)
+5. AWS credentials (optional, for S3 storage)
 
-## Installation
+## Setup Steps
 
-### Local Setup
+### 1. Create a Virtual Environment
 
-1. Clone the repository:
+```bash
+# Create a virtual environment
+python -m venv venv
+
+# Activate the virtual environment
+# On Windows
+venv\Scripts\activate
+# On macOS/Linux
+source venv/bin/activate
+```
+
+### 2. Install Required Packages
+
+```bash
+pip install flask pymysql bcrypt python-dotenv flask-mail boto3 langchain-anthropic
+pip install browser-use
+```
+
+### 3. Database Setup
+
+1. Create a MySQL database using the provided schema:
    ```bash
-   git clone https://github.com/yourusername/linkedin-automation.git
-   cd linkedin-automation
+   mysql -u root -p < database_schema.sql
    ```
-
-2. Create a virtual environment:
-   ```bash
-   python -m venv venv
    
-   # On Windows
-   venv\Scripts\activate
-   
-   # On macOS/Linux
-   source venv/bin/activate
-   ```
+   or import the database schema through a MySQL client using the SQL in `database_schema.sql`.
 
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 4. Configure Environment Variables
 
-4. Install Playwright browsers:
-   ```bash
-   playwright install
-   ```
+Create a `.env` file in the project root with the following variables:
 
-5. Create a `.env` file:
-   ```bash
-   cp .env.example .env
-   ```
+```
+# Flask settings
+FLASK_SECRET_KEY=your_random_secure_secret_key
 
-6. Edit the `.env` file and add your Anthropic API key and a secret key for Flask:
-   ```
-   ANTHROPIC_API_KEY=your_anthropic_key_here
-   FLASK_SECRET_KEY=random_secret_key_here
-   ```
+# Database settings
+DB_HOST=localhost
+DB_USER=your_db_username
+DB_PASSWORD=your_db_password
+DB_NAME=linkedin_automation
 
-7. Run the application:
-   ```bash
-   python app.py
-   ```
+# Anthropic API settings
+ANTHROPIC_API_KEY=your_anthropic_api_key
 
-8. Open your browser and navigate to `http://127.0.0.1:5000`
+# Browser settings
+BROWSER_TYPE=chromium  # or firefox, webkit
 
-### Server Deployment
+# Email settings (for password reset)
+MAIL_SERVER=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your_email@gmail.com
+MAIL_PASSWORD=your_app_password
+MAIL_DEFAULT_SENDER=your_email@gmail.com
 
-#### Option 1: Deploy on a VPS (e.g., DigitalOcean, AWS EC2, etc.)
+# AWS settings (optional, for S3)
+USE_S3=False
+AWS_ACCESS_KEY_ID=your_aws_access_key
+AWS_SECRET_ACCESS_KEY=your_aws_secret_key
+AWS_REGION=us-east-1
+S3_BUCKET=your-bucket-name
+```
 
-1. SSH into your server:
-   ```bash
-   ssh user@your-server-ip
-   ```
+### 5. Create Static Directories
 
-2. Install required packages:
-   ```bash
-   sudo apt update
-   sudo apt install python3 python3-pip python3-venv nginx
-   ```
+Ensure the following directories exist in your project structure:
 
-3. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/linkedin-automation.git
-   cd linkedin-automation
-   ```
+```bash
+mkdir -p static/uploads
+mkdir -p static/profile_images
+mkdir -p static/images
+mkdir -p logs/linkedin_automation
+```
 
-4. Follow steps 2-6 from the Local Setup section.
+### 6. Add SVG icons for social login
 
-5. Install and set up Gunicorn:
-   ```bash
-   pip install gunicorn
-   ```
+Copy the provided SVG files to the static/images directory:
+- Copy `google.svg` to `static/images/google.svg`
+- Copy `apple.svg` to `static/images/apple.svg`
 
-6. Create a systemd service file:
-   ```bash
-   sudo nano /etc/systemd/system/linkedin-automation.service
-   ```
+### 7. Run the Application
 
-7. Add the following content (adjust paths and user as needed):
-   ```
-   [Unit]
-   Description=LinkedIn Automation Tool
-   After=network.target
+```bash
+python app.py
+```
 
-   [Service]
-   User=your_username
-   WorkingDirectory=/path/to/linkedin-automation
-   Environment="PATH=/path/to/linkedin-automation/venv/bin"
-   ExecStart=/path/to/linkedin-automation/venv/bin/gunicorn -w 1 -b 127.0.0.1:8000 app:app
-   Restart=always
+Visit http://127.0.0.1:5000/ in your browser to access the application.
 
-   [Install]
-   WantedBy=multi-user.target
-   ```
+## AWS Setup (Optional)
 
-8. Enable and start the service:
-   ```bash
-   sudo systemctl daemon-reload
-   sudo systemctl enable linkedin-automation
-   sudo systemctl start linkedin-automation
-   ```
+If you want to use AWS for file storage:
 
-9. Configure Nginx as a reverse proxy:
-   ```bash
-   sudo nano /etc/nginx/sites-available/linkedin-automation
-   ```
+1. Create an S3 bucket in your AWS account
+2. Create an IAM user with programmatic access
+3. Attach the AmazonS3FullAccess policy to the user
+4. Generate access keys and add them to your .env file
+5. Set USE_S3=True in the .env file
 
-10. Add the following configuration:
-    ```
-    server {
-        listen 80;
-        server_name your-domain.com;
+## MySQL Database on AWS
 
-        location / {
-            proxy_pass http://127.0.0.1:8000;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-        }
-    }
-    ```
+If setting up MySQL on AWS:
 
-11. Enable the site and restart Nginx:
-    ```bash
-    sudo ln -s /etc/nginx/sites-available/linkedin-automation /etc/nginx/sites-enabled/
-    sudo systemctl restart nginx
-    ```
+1. Create an RDS MySQL instance
+2. Configure security groups to allow connections from your application
+3. Update the DB_HOST in your .env file to point to the RDS endpoint
+4. Ensure the database credentials in .env match your RDS instance
 
-12. (Optional) Set up HTTPS with Certbot:
-    ```bash
-    sudo apt install certbot python3-certbot-nginx
-    sudo certbot --nginx -d your-domain.com
-    ```
+## Default LinkedIn Interface Image
 
-#### Option 2: Deploy with Docker
+To use a default LinkedIn interface image as a reference, place a screenshot of the LinkedIn interface at:
+```
+static/uploads/linkedin_interface.png
+```
 
-1. Create a Dockerfile in your project directory:
-   ```bash
-   nano Dockerfile
-   ```
+## Development Notes
 
-2. Add the following content:
-   ```Dockerfile
-   FROM python:3.11-slim
-
-   WORKDIR /app
-
-   # Install system dependencies
-   RUN apt-get update && apt-get install -y \
-       wget \
-       gnupg \
-       && rm -rf /var/lib/apt/lists/*
-
-   # Install Playwright dependencies
-   RUN pip install playwright && python -m playwright install --with-deps chromium
-
-   # Install Python dependencies
-   COPY requirements.txt .
-   RUN pip install -r requirements.txt
-
-   # Copy application code
-   COPY . .
-
-   # Create logs directory
-   RUN mkdir -p logs/linkedin_automation
-
-   # Run the application
-   CMD ["python", "app.py"]
-   ```
-
-3. Create a docker-compose.yml file:
-   ```bash
-   nano docker-compose.yml
-   ```
-
-4. Add the following content:
-   ```yaml
-   version: '3'
-   services:
-     linkedin-automation:
-       build: .
-       ports:
-         - "5000:5000"
-       environment:
-         - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-         - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
-       volumes:
-         - ./logs:/app/logs
-       restart: unless-stopped
-   ```
-
-5. Build and run with Docker Compose:
-   ```bash
-   docker-compose up -d
-   ```
-
-## Usage
-
-1. Open the application in your web browser
-2. Enter a prompt describing what you want to do on LinkedIn
-3. Click "Run Automation" to start the process
-4. View the results including screenshots and actions performed
-
-## Important Notes
-
-- The application will use your browser's existing LinkedIn session if you're logged in
-- Be mindful of LinkedIn's usage policies to avoid account restrictions
-- This tool is for educational purposes; use responsibly and ethically
-
-## Anthropic API and Pricing
-
-Anthropic's Claude AI models (used in this application) are not free. Here's what you need to know:
-
-- You need an Anthropic API key to use this application
-- Claude offers [free trial credits](https://www.anthropic.com/api) for new users (typically $5-$10)
-- API costs are based on input and output tokens (similar to OpenAI's pricing model)
-- Claude 3 Sonnet costs approximately:
-  - Input: $3.00 per million tokens
-  - Output: $15.00 per million tokens
-- For testing and low-volume use, the initial credits should be sufficient
-- For production use, you will need to provide payment information to Anthropic
-
-For detailed and current pricing information, visit [Anthropic's pricing page](https://www.anthropic.com/api/pricing).
-
-## Troubleshooting
-
-- **Browser doesn't open**: Make sure Playwright is installed correctly with `playwright install`
-- **Authentication errors**: Check your Anthropic API key in the .env file
-- **Automation fails**: LinkedIn's UI can change, affecting automation reliability
+- For local development, you may want to set `debug=True` in `app.py`
+- Make sure to secure your .env file and never commit it to version control
+- In a production environment, use a proper WSGI server like Gunicorn or uWSGI

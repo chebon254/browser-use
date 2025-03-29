@@ -71,49 +71,11 @@ Your responses must be always JSON with the specified format.
 
  HumanMessage 
 Your ultimate task is: """
-                Note: The user has uploaded a screenshot of the LinkedIn interface to help you understand the UI.
-                Use your knowledge of LinkedIn's interface to navigate the site based on the provided instructions.
-                Pay special attention to the structure of posts, the comment sections, and interactive elements.
+                Note: I'll use the standard LinkedIn interface screenshot at /home/kibe/Dev/Upwork/linkedin-automation/browser-use/static/uploads/linkedin_interface.png as a reference.
+                I'll use my knowledge of LinkedIn's interface to navigate and perform the actions you requested.
                 
 
-Go to https://www.linkedin.com/feed/ and comment on posts after reading them, and insert a comment based on their paragraph content, ignore links and hash tag eg #school. After posting a comment, to find more posts scrolling down, comment on 10 posts. My account email: contact@chebonkelvin.com password: @?Kelvin11468 on linkedin user interface i have attached sample post on image. 
-
-Task: Read and comment on LinkedIn posts
-
-1. Navigate to LinkedIn feed: https://www.linkedin.com/feed/
-
-2. For each post:
-   - Look for the post content (paragraph text)
-   - Click "...more" if available to read the full content
-   - Ignore hashtags and links when formulating your comment
-   - Write a relevant comment based on the post's text content
-   - Click the "Comment" button to submit
-
-3. Comment process:
-   - Find the comment section (look for [icon-text(comment)])
-   - Click to expand the comment area
-   - Type your comment in the input field with placeholder "Add a comment"
-   - Click the "Comment" button that appears
-
-4. Continue scrolling to find more posts
-   - Comment on a total of 10 posts
-   - Comment on two posts then refresh, then another 2 post till 10 posts
-   - Skip cards that are recommendations (profile suggestions)
-
-5. How to identify posts:
-   - Posts have reaction options at the bottom ([icon-text(like)]-[icon-text(comment)])
-   - Posts typically have paragraphs of text (1-3 lines)
-   - Posts may include media (images/videos)
-   - Some posts may be reposts (showing two profile details)
-
-6. When commenting:
-   - Be relevant to the post content
-   - comments should not be more than 60 words
-   - If it's a repost, you can address either the original content or both
-   - Keep comments thoughtful and professional
-
-
-""". If you achieved your ultimate task, stop everything and use the done action in the next step to complete the task. If not, continue as usual.
+go youtube and watch a video, any video, or search for germany lessons""". If you achieved your ultimate task, stop everything and use the done action in the next step to complete the task. If not, continue as usual.
 
  HumanMessage 
 Example output:
@@ -134,65 +96,64 @@ Browser started
 
 
  HumanMessage 
-Action result: 🔗  Navigated to https://www.linkedin.com/feed/
+Action result: 🔗  Navigated to https://www.youtube.com
 
  HumanMessage 
 [Task history memory ends]
 [Current state starts here]
 The following is one-time information - if you need to remember it write it to memory:
-Current url: https://www.linkedin.com/uas/login?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2F
+Current url: https://www.youtube.com/
 Available tabs:
-[TabInfo(page_id=0, url='https://www.linkedin.com/uas/login?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2F', title='LinkedIn Login, Sign in | LinkedIn')]
+[TabInfo(page_id=0, url='https://www.youtube.com/', title='YouTube')]
 Interactive elements from top layer of the current page inside the viewport:
 [Start of page]
-[0]<a LinkedIn/>
-Sign in
-[1]<button Sign in with Apple/>
-or
-[2]<input email;Email or phone;session_key; />
-Email or phone
-[3]<input session_password;password;Password/>
-Password
-[4]<span button>Show/>
-[5]<a Forgot password?/>
-Keep me logged in
-[6]<button submit>Sign in/>
-New to LinkedIn?
-[7]<a Join now/>
-© 2025
-[8]<a User Agreement/>
-[9]<a Privacy Policy/>
-[10]<a Community Guidelines/>
-[11]<a Cookie Policy/>
-[12]<a Copyright Policy/>
-[13]<a Send Feedback/>
-[14]<button false>Language/>
+[0]<button Guide/>
+[1]<a YouTube Home/>
+KE
+[2]<div />
+[3]<input text;combobox;search_query;true;Search/>
+[4]<button Search/>
+[5]<button Search with your voice/>
+[6]<a />
+[7]<button Settings/>
+[8]<a Sign in/>
+[9]<ytd-mini-guide-entry-renderer Home;tab/>
+[10]<a Home>Home
+Home/>
+[11]<ytd-mini-guide-entry-renderer tab;Shorts/>
+[12]<a Shorts>Shorts
+Shorts/>
+[13]<ytd-mini-guide-entry-renderer tab;Subscriptions/>
+[14]<a Subscriptions>Subscriptions
+Subscriptions/>
+[15]<ytd-mini-guide-entry-renderer You;tab/>
+[16]<a You>You
+You/>
+[17]<ytd-mini-guide-entry-renderer History;tab/>
+[18]<a History>History
+History/>
+Try searching to get started
+Start watching videos to help us build a feed of videos you'll love.
 [End of page]
-Current step: 2/100Current date and time: 2025-03-27 11:48
+Current step: 2/100Current date and time: 2025-03-29 22:48
 
  RESPONSE
 {
   "current_state": {
-    "evaluation_previous_goal": "Success - We have reached the LinkedIn login page",
-    "memory": "Need to login with email: contact@chebonkelvin.com and password: @?Kelvin11468. Will need to comment on 10 posts total (0/10 completed). Plan to comment on 2 posts at a time, then refresh.",
-    "next_goal": "Login to LinkedIn by entering email and password"
+    "evaluation_previous_goal": "Success - Successfully navigated to YouTube homepage",
+    "memory": "On YouTube homepage. Will search for German lessons as specified in the task. Step 2/100.",
+    "next_goal": "Search for German lessons"
   },
   "action": [
     {
       "input_text": {
-        "index": 2,
-        "text": "contact@chebonkelvin.com"
-      }
-    },
-    {
-      "input_text": {
         "index": 3,
-        "text": "@?Kelvin11468"
+        "text": "german lessons"
       }
     },
     {
       "click_element": {
-        "index": 6
+        "index": 4
       }
     }
   ]

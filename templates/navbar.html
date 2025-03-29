@@ -1,0 +1,12 @@
+<!-- templates/navbar.html -->
+<nav class="navbar">
+    <div class="navbar-brand">
+        <a href="{{ url_for('dashboard') }}">LinkedIn Automation</a>
+    </div>
+    
+    <ul class="navbar-menu">
+        <li><a href="{{ url_for('dashboard') }}" class="{% if request.path == url_for('dashboard') %}active{% endif %}">Dashboard</a></li>
+        <li><a href="{{ url_for('profile') }}" class="{% if request.path == url_for('profile') %}active{% endif %}">Profile</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+</nav>

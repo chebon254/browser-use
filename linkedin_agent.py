@@ -41,10 +41,15 @@ async def run_linkedin_automation(prompt, uploaded_image_path=None):
         if uploaded_image_path and os.path.exists(uploaded_image_path):
             try:
                 print(f"Processing uploaded image: {uploaded_image_path}")
+                
+                # For demonstration, we'll just reference the image in the path
+                # In a production system, you might want to use the actual image data
+                interface_image_path = os.path.abspath(uploaded_image_path)
+                
                 # Add reference to the image in the prompt instead of trying to pass it directly
-                image_reference = """
-                Note: The user has uploaded a screenshot of the LinkedIn interface to help you understand the UI.
-                Use your knowledge of LinkedIn's interface to navigate the site based on the provided instructions.
+                image_reference = f"""
+                Note: I've seen the LinkedIn interface from the screenshot you uploaded at {interface_image_path}.
+                I'll use my knowledge of LinkedIn's interface to navigate and perform the actions you requested.
                 Pay special attention to the structure of posts, the comment sections, and interactive elements.
                 """
                 enhanced_prompt = image_reference + "\n\n" + prompt
@@ -53,6 +58,17 @@ async def run_linkedin_automation(prompt, uploaded_image_path=None):
             except Exception as e:
                 print(f"Warning: Failed to process uploaded image: {str(e)}")
                 traceback.print_exc()
+        else:
+            # Check if we should use the default interface image
+            default_image_path = os.path.join('static', 'uploads', 'linkedin_interface.png')
+            if os.path.exists(default_image_path):
+                interface_image_path = os.path.abspath(default_image_path)
+                image_reference = f"""
+                Note: I'll use the standard LinkedIn interface screenshot at {interface_image_path} as a reference.
+                I'll use my knowledge of LinkedIn's interface to navigate and perform the actions you requested.
+                """
+                enhanced_prompt = image_reference + "\n\n" + prompt
+                print("Added default LinkedIn UI image reference to prompt")
         
         # Create the Browser Use agent with enhanced prompt
         print("Creating Browser Use agent...")
@@ -153,9 +169,3 @@ def run_automation(prompt, uploaded_image_path=None):
             "errors": [str(e), error_traceback],
             "final_result": f"Error occurred in automation wrapper: {str(e)}"
         }
-
-# Example usage
-if __name__ == "__main__":
-    result = run_automation("Go to https://www.linkedin.com and search for AI jobs")
-    print(f"Success: {result['success']}")
-    print(f"Final result: {result['final_result']}")

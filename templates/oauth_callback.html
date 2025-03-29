@@ -1,0 +1,70 @@
+<!-- templates/oauth_callback.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ provider }} Login - LinkedIn Automation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <h1>LinkedIn Automation Tool</h1>
+            
+            <div class="card">
+                <h2>{{ provider }} Authentication</h2>
+                
+                <div class="oauth-loading">
+                    <div class="spinner-large"></div>
+                    <p>Authenticating with {{ provider }}...</p>
+                </div>
+                
+                <!-- This form would normally be submitted automatically by JavaScript after OAuth completes -->
+                <!-- For demo purposes, we're using a manual form -->
+                <form method="POST" action="{{ url_for('oauth_callback') }}" id="oauth-form">
+                    <input type="hidden" name="provider" value="{{ provider }}">
+                    <input type="hidden" name="email" id="email">
+                    <input type="hidden" name="name" id="full_name">
+                    
+                    <!-- Demo fields - these would be hidden and populated by actual OAuth -->
+                    <div class="form-group">
+                        <label for="demo_email">Your Email:</label>
+                        <input type="email" id="demo_email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="demo_name">Your Name:</label>
+                        <input type="text" id="demo_name" required>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary full-width" onclick="submitOauthForm()">
+                        Complete {{ provider }} Login
+                    </button>
+                </form>
+                
+                <div class="back-link">
+                    <p><a href="{{ url_for('login') }}">Cancel and return to login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // In a real implementation, this would be handled by the OAuth provider callback
+        function submitOauthForm() {
+            const email = document.getElementById('demo_email').value;
+            const name = document.getElementById('demo_name').value;
+            
+            if (!email || !name) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            document.getElementById('email').value = email;
+            document.getElementById('full_name').value = name;
+            document.getElementById('oauth-form').submit();
+        }
+    </script>
+</body>
+</html>

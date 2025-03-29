@@ -71,49 +71,11 @@ Your responses must be always JSON with the specified format.
 
  HumanMessage 
 Your ultimate task is: """
-                Note: The user has uploaded a screenshot of the LinkedIn interface to help you understand the UI.
-                Use your knowledge of LinkedIn's interface to navigate the site based on the provided instructions.
-                Pay special attention to the structure of posts, the comment sections, and interactive elements.
+                Note: I'll use the standard LinkedIn interface screenshot at /home/kibe/Dev/Upwork/linkedin-automation/browser-use/static/uploads/linkedin_interface.png as a reference.
+                I'll use my knowledge of LinkedIn's interface to navigate and perform the actions you requested.
                 
 
-Go to https://www.linkedin.com/feed/ and comment on posts after reading them, and insert a comment based on their paragraph content, ignore links and hash tag eg #school. After posting a comment, to find more posts scrolling down, comment on 10 posts. My account email: contact@chebonkelvin.com password: @?Kelvin11468 on linkedin user interface i have attached sample post on image. 
-
-Task: Read and comment on LinkedIn posts
-
-1. Navigate to LinkedIn feed: https://www.linkedin.com/feed/
-
-2. For each post:
-   - Look for the post content (paragraph text)
-   - Click "...more" if available to read the full content
-   - Ignore hashtags and links when formulating your comment
-   - Write a relevant comment based on the post's text content
-   - Click the "Comment" button to submit
-
-3. Comment process:
-   - Find the comment section (look for [icon-text(comment)])
-   - Click to expand the comment area
-   - Type your comment in the input field with placeholder "Add a comment"
-   - Click the "Comment" button that appears
-
-4. Continue scrolling to find more posts
-   - Comment on a total of 10 posts
-   - Comment on two posts then refresh, then another 2 post till 10 posts
-   - Skip cards that are recommendations (profile suggestions)
-
-5. How to identify posts:
-   - Posts have reaction options at the bottom ([icon-text(like)]-[icon-text(comment)])
-   - Posts typically have paragraphs of text (1-3 lines)
-   - Posts may include media (images/videos)
-   - Some posts may be reposts (showing two profile details)
-
-6. When commenting:
-   - Be relevant to the post content
-   - comments should not be more than 60 words
-   - If it's a repost, you can address either the original content or both
-   - Keep comments thoughtful and professional
-
-
-""". If you achieved your ultimate task, stop everything and use the done action in the next step to complete the task. If not, continue as usual.
+go youtube and watch a video, any video, or search for germany lessons""". If you achieved your ultimate task, stop everything and use the done action in the next step to complete the task. If not, continue as usual.
 
  HumanMessage 
 Example output:
@@ -134,7 +96,7 @@ Browser started
 
 
  HumanMessage 
-Action result: 🔗  Navigated to https://www.linkedin.com/feed/
+Action result: 🔗  Navigated to https://www.youtube.com
 
  AIMessage 
 
@@ -143,10 +105,10 @@ Action result: 🔗  Navigated to https://www.linkedin.com/feed/
 
 
  HumanMessage 
-Action result: ⌨️  Input contact@chebonkelvin.com into index 2
+Action result: ⌨️  Input german lessons into index 3
 
  HumanMessage 
-Action result: ⌨️  Input @?Kelvin11468 into index 3
+Action result: Something new appeared after action 1 / 2
 
  AIMessage 
 
@@ -155,10 +117,7 @@ Action result: ⌨️  Input @?Kelvin11468 into index 3
 
 
  HumanMessage 
-Action result: ⌨️  Input contact@chebonkelvin.com into index 2
-
- HumanMessage 
-Action result: ⌨️  Input @?Kelvin11468 into index 3
+Action result: 🖱️  Clicked button with index 7:
 
  AIMessage 
 
@@ -167,7 +126,53 @@ Action result: ⌨️  Input @?Kelvin11468 into index 3
 
 
  HumanMessage 
-Action result: 🖱️  Clicked button with index 46: Comment
+Action result: 📄  Extracted from page
+: Here is the extracted video information in JSON format:
+
+{
+  "german_lessons": [
+    {
+      "title": "A1 | Learn German for beginners",
+      "duration": "67 lessons",
+      "channel": "Learn German"
+    },
+    {
+      "title": "GERMAN FOR BEGINNERS FREE COURSE (A1) LESSONS 1-63",
+      "duration": "62 videos", 
+      "channel": "Learn German with Anja"
+    },
+    {
+      "title": "Learn German in 25 Minutes - ALL the Basics You Need",
+      "duration": "25:59",
+      "channel": "Learn German with GermanPod101.com"
+    },
+    {
+      "title": "GERMAN LESSON 1: Learn German for Beginners - German Greetings",
+      "duration": "4:32",
+      "channel": "Learn German with Anja"
+    },
+    {
+      "title": "The German Alphabet - Learn German (Lesson 1) - Complete A1-B1 Course",
+      "duration": "1:37",
+      "channel": "LanguageSheep"
+    },
+    {
+      "title": "A1 - Lesson 2 | Common Phrases | German for beginners",
+      "duration": "10:40",
+      "channel": "Learn German"
+    },
+    {
+      "title": "Learn German A1 in 25 Minutes Step by Step (Crash Course For Beginners)",
+      "duration": "25:02",
+      "channel": "Max Yoko"
+    },
+    {
+      "title": "A1 - Lesson 5 | Alphabets | das Alphabet | German for beginners",
+      "duration": "10:36",
+      "channel": "Learn German"
+    }
+  ]
+}
 
  AIMessage 
 
@@ -176,233 +181,78 @@ Action result: 🖱️  Clicked button with index 46: Comment
 
 
  HumanMessage 
-Action result: ⌨️  Input This is a fantastic initiative to help young leaders transform their potential into meaningful impact. Having dedicated speakers like Gift Ifokwe and Chioma Emmanuel will provide valuable insights for personal development. Looking forward to the positive outcomes from this session! into index 54
+Action result: 🖱️  Clicked button with index 56: Learn German in 25 Minutes - ALL the Basics You Need
 
  HumanMessage 
 [Task history memory ends]
 [Current state starts here]
 The following is one-time information - if you need to remember it write it to memory:
-Current url: https://www.linkedin.com/feed/
+Current url: https://www.youtube.com/watch?v=xg60VxyK-9I
 Available tabs:
-[TabInfo(page_id=0, url='https://www.linkedin.com/feed/', title='(21) Feed | LinkedIn')]
+[TabInfo(page_id=0, url='https://www.youtube.com/watch?v=xg60VxyK-9I', title='Learn German in 25 Minutes - ALL the Basics You Need - YouTube')]
 Interactive elements from top layer of the current page inside the viewport:
-... 640 pixels above - scroll or extract content to see more ...
-[0]<a />
-[1]<input combobox;false;text;Search/>
-[2]<a Home/>
-[3]<a 1
-1 new network update notification
-My Network/>
-[4]<a Jobs/>
-[5]<a 1
-1 new message notification
-Messaging/>
-[6]<a 19
-19 new notifications
-Notifications/>
-[7]<button false>Me/>
-[8]<img />
-[9]<button false>For Business/>
-[10]<a Try Premium for KES0/>
-[11]<a />
-[12]<img />
-[13]<a Kelvin Chebon
-Frontend Developer at Intelliverse.ai
-Nairobi, Nairobi County/>
-[14]<a Intelliverse.ai/>
-[15]<img />
-[16]<a Connection
-Grow your network
-1/>
-[17]<a Grow your career with Premium
-Try Premium for KES0/>
-[18]<a Saved items/>
-[19]<a Groups/>
-[20]<a Newsletters/>
-[21]<a Events/>
-[22]<button Add a video>Video/>
-[23]<button Add a photo>Photo/>
-[24]<a Write an article on LinkedIn>Write article/>
-[25]<button false>Sort by:
-Top/>
-feed updates
-Feed post number 1
-[26]<a Young African Leaders for Global Impact, graphic./>
-[27]<img />
-[28]<a View: Young African Leaders for Global Impact 600 followers>Young African Leaders for Global Impact
-Young African Leaders for Global Impact
-600 followers
-600 followers/>
-1d •
-1 day ago
-[29]<button false;Open control menu for post by Young African Leaders for Global Impact/>
-[30]<button Dismiss post by Young African Leaders for Global Impact/>
-[31]<div Hello there, it's another Wednesday packed with an exciting event just for you 💃💃💃
-This evening, we will be talking about transforming our potential to make an impact.
-This evening our power packed speakers include
-and
-They will be taking us how to use our potential effectively and efficiently.
-If you are as excited as we are for this evening, clear your schedules, get your writing material and join live by 7:30PM.
-Be part of the moment and join with the link below.
-We look forward to seeing you 🥳🤭😊
-#YALGIcares##personaldevelopmentandgrowth##tranformationforimpact#/>
-[32]<a />
-[33]<a Gift Ifokwe (The GiftedHands💪)/>
-[34]<a />
-[35]<a Chioma Emmanuel/>
-[36]<a https://lnkd.in/gtrNgUFa/>
-[37]<button see more, visually reveals content which is already detected by screen readers>…more/>
-Activate to view larger image,
-Activate to view larger image,
-[38]<button 18 reactions>18/>
-[39]<img />
-[40]<img />
-[41]<img />
-[42]<button 4 comments on Young African Leaders for Global Impact’s post>4 comments/>
-[43]<button 2 reposts of Young African Leaders for Global Impact’s post>2 reposts/>
-[44]<button React Like>Like/>
-[45]<button Comment/>
-[46]<button false;>Repost/>
-[47]<button Send in a private message>Send/>
-[48]<button Reply to conversation with Amazing>Amazing/>
-[49]<button Reply to conversation with Love this>Love this/>
-[50]<button Reply to conversation with Worth attending>Worth attending/>
-[51]<button Reply to conversation with Great opportunity>Great opportunity/>
-Thanks for sharing
-Exciting
-Highly recommended
-[52]<button Next button/>
-[53]<img />
-[54]<div Text editor for creating content;textbox/>
-[55]<p This is a fantastic initiative to help young leaders transform their potential into meaningful impact. Having dedicated speakers like Gift Ifokwe and Chioma Emmanuel will provide valuable insights for personal development. Looking forward to the positive outcomes from this session!/>
-[56]<button false>Open Emoji Keyboard/>
-[57]<button Add a photo/>
-[58]<button Comment/>
-[59]<button false>Current selected sort order is Most relevant
-Most relevant/>
-[60]<a View Young African Leaders for Global Impact’s profile/>
-[61]<img />
-[62]<a View: Young African Leaders for Global Impact Author,  600 followers>Young African Leaders for Global Impact
-Author
-600 followers/>
-1d
-[63]<button false/>
-We look forward to seeing you all
-Be part of the moment 🤭
-[64]<button React Like to Young African Leaders for Global Impact’s comment>Like/>
-[65]<button 1 Reaction on Young African Leaders for Global Impact’s comment>1/>
-[66]<img />
-[67]<button Reply to Young African Leaders for Global Impact’s comment>Reply/>
-[68]<a View Young African Leaders for Global Impact’s profile/>
-[69]<img />
-[70]<a View: Young African Leaders for Global Impact Author,  600 followers>Young African Leaders for Global Impact
-Author
-600 followers/>
-1d
-[71]<button false/>
-It's this evening 💃💃💃💃
-Make it a  date 🌹
-[72]<button React Like to Young African Leaders for Global Impact’s comment>Like/>
-[73]<button 1 Reaction on Young African Leaders for Global Impact’s comment>1/>
-[74]<img />
-[75]<button Reply to Young African Leaders for Global Impact’s comment>Reply/>
-[76]<button Load more comments/>
-[77]<button Load more comments/>
-Skip to LinkedIn News
-Feed post number 2
-[78]<a />
-[79]<img />
-[80]<a Alloysius Attah/>
-finds this insightful
-[81]<button false;Open control menu for post by Dr. Dotun Olowoporoku/>
-[82]<button Dismiss post by Dr. Dotun Olowoporoku/>
-[83]<a Dr. Dotun Olowoporoku, graphic./>
-[84]<img />
-[85]<a View: Dr. Dotun Olowoporoku • 3rd+ Early Stage Venture Capital | Tech Investor>Dr.  Dotun Olowoporoku
-Dr.  Dotun Olowoporoku
-• 3rd+
-• 3rd+
-Early Stage Venture Capital | Tech Investor
-Early Stage Venture Capital | Tech Investor/>
-1d • Edited •
-1 day ago
-[86]<button Follow Dr. Dotun Olowoporoku>Follow/>
-[87]<div Years ago at the University of Lagos, my best friend and flatmate David Oke and I shared not just a room but dreams of serving God and making an impact through the gospel of Christ. Today, while I've pursued entrepreneurship and investing, David serves as a missionary in The Gambia. I see little difference in what we're called to do — be the light that shines the gospel of Christ. This perspective has shaped how I view my entrepreneurial and investment journey as an extension of helping the gospel and grace of Jesus reach as many people as possible.
-This is why I'm hosting an Evening of Yoruba Hymns on May 4th at The First Baptist Church Lagos. I chose Yoruba hymns because they represent my first profound connection with theological understanding, offering deep insights into God's nature and His relationship with me as a kid. The venue itself carries historical significance - established in 1855 as a missionary church, funded by supporters from America.
-I'll love to see you there and support in raising N100m to support the work of Praise of His Glory Ministry and train more missionaries at The Nigerian Baptist Theological Seminaries.
-Please register using this link
-If you're unable to attend, you can still support this cause by donating through the account details below.
-It will be evening of beautiful Yoruba hymns
-Account details
-Name: Praise of His Glory Ministry
-Bank: UBA Acct #: 101 363 1685
-Purpose: “Towards 100m Raise”/>
-[88]<a https://lnkd.in/eYmQiep4/>
-[89]<button see more, visually reveals content which is already detected by screen readers>…more/>
-Media player modal window
-The media could not be loaded, either because the server or network failed or because the format is not supported.
-[90]<button 419 reactions>419/>
-[91]<img />
-[92]<img />
-[93]<img />
-[94]<button 29 comments on {:actorName}{:actorName} post>29 comments/>
-[95]<button 35 reposts of {:actorName}{:actorName} post>35 reposts/>
-[96]<button React Like>Like/>
-[97]<button Comment/>
-[98]<button false;>Repost/>
-[99]<button Send in a private message>Send/>
-[100]<a Zip
-Complete the path/>
-[101]<img />
-[102]<a Tango
-Harmonize the grid/>
-[103]<img />
-[104]<a Queens
-Crown each region/>
-[105]<img />
-[106]<a Show more/>
-Add to your feed
-[107]<button false;More information about add to your feed/>
-[108]<a />
-[109]<img />
-[110]<a British High Commission in Bangladesh
-Company • Government Relations Services/>
-[111]<button Follow/>
-[112]<a />
-[113]<img />
-[114]<a Kwame Oppong
-Director of FinTech and Innovation @ Bank of Ghana | Financial Technology | Financial Inclusion | Digital Financial Services./>
-[115]<button Follow/>
-[116]<a />
-[117]<img />
-[118]<a Writer
-Company • Software Development/>
-Follow
-View all recommendations
-[119]<a About/>
-[120]<a Accessibility/>
-[121]<a Help Center/>
-[122]<button false>Privacy & Terms/>
-[123]<a Ad Choices/>
-[124]<a Advertising/>
-[125]<button false>Business Services/>
-[126]<button Get the LinkedIn app/>
-[127]<button More options>More/>
-LinkedIn Corporation © 2025
-... 2556 pixels below - scroll or extract content to see more ...
-Current step: 6/100Current date and time: 2025-03-27 11:49
+[Start of page]
+[0]<button Guide/>
+[1]<a YouTube Home/>
+KE
+[2]<div />
+[3]<input text;combobox;search_query;true;Search/>
+[4]<button Clear search query/>
+[5]<button Search/>
+[6]<button Search with your voice/>
+[7]<a />
+[8]<button Settings/>
+[9]<a Sign in/>
+[10]<a AdaptedMind Math Game Walkthrough: Boost Your Math Skills Today/>
+[11]<button Share/>
+[12]<div Seek slider;slider/>
+[13]<button Pause (k);Play (k)/>
+[15]<button Mute (m)/>
+[16]<button Subtitles/closed captions unavailable/>
+[17]<button Settings;false/>
+[18]<button Miniplayer (i)/>
+[19]<button Theater mode (t)/>
+[20]<button Full screen (f)/>
+Learn German in 25 Minutes - ALL the Basics You Need
+[21]<a />
+[22]<a Learn German with GermanPod101.com/>
+844K subscribers
+[23]<button ;Subscribe to Learn German with GermanPod101.com.>Subscribe/>
+[24]<button I like this;like this video along with 147,043 other people>147K/>
+[25]<button Dislike this video;I dislike this/>
+[26]<button Share/>
+Download
+Save
+6.6M views
+7 years ago
+[27]<a #GermanPod101/>
+This is your ultimate compilation to get started with German in 25 Minutes! Don’t forget to create your free account here
+[28]<a https://goo.gl/eWBYb3/>
+to access personalized lessons, tons of video series, wordlists and more! ↓Check how below↓
+…
+[29]<tp-yt-paper-button button>...more/>
+Studio Apartments at only Ksh. 2.2M
+[30]<a />
+[31]<a With Only ksh 2.2M You Can Own a Studio Apartment in the Heart of Nairobi City (CBD)/>
+Sponsored
+Soil Merchants KE
+[32]<button My Ad Center/>
+[33]<a Visit site/>
+... 1548 pixels below - scroll or extract content to see more ...
+Current step: 6/100Current date and time: 2025-03-29 22:49
 
  RESPONSE
 {
   "current_state": {
-    "evaluation_previous_goal": "Success - Comment has been typed in the comment box",
-    "memory": "Need to comment on 10 posts total (0/10 completed). First comment is ready to be posted on the Young African Leaders for Global Impact post about the youth event. After this, will need to find and comment on one more post before refreshing.",
-    "next_goal": "Click the Comment button to post our comment"
+    "evaluation_previous_goal": "Success - Successfully navigated to the German lesson video",
+    "memory": "We are now watching 'Learn German in 25 Minutes - ALL the Basics You Need' with 6.6M views. The video is loaded and ready to play. Task completed as we have reached a German lesson video as requested.",
+    "next_goal": "Complete the task as we have successfully reached and loaded a German lesson video"
   },
   "action": [
     {
-      "click_element": {
-        "index": 58
+      "done": {
+        "text": "Successfully navigated to YouTube and found a German lesson video: 'Learn German in 25 Minutes - ALL the Basics You Need'. The video is loaded and ready for viewing. This comprehensive lesson has 6.6M views and covers all the basics needed for beginners. Task completed successfully as we have fulfilled the requirement to go to YouTube and find a German lesson video.",
+        "success": true
       }
     }
   ]

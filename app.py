@@ -1,4 +1,4 @@
-# app.py
+from authlib.integrations.flask_client import OAuth
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 import os
 import json
@@ -13,11 +13,16 @@ from linkedin_agent import run_automation
 from werkzeug.utils import secure_filename
 from functools import wraps
 import re
+import jwt
+import requests
+import time
 
 # Load environment variables
 load_dotenv()
 
 app = Flask(__name__)
+oauth = OAuth(app)
+
 app.secret_key = os.getenv("FLASK_SECRET_KEY", secrets.token_hex(16))
 
 # Configure mail
@@ -28,6 +33,21 @@ app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 mail = Mail(app)
+
+# Google OAuth configuration
+google = oauth.register(
+    name='google',
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    access_token_params=None,
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    authorize_params=None,
+    api_base_url='https://www.googleapis.com/oauth2/v1/',
+    userinfo_endpoint='https://openidconnect.googleapis.com/v1/userinfo',
+    client_kwargs={'scope': 'openid email profile'},
+    jwks_uri='https://www.googleapis.com/oauth2/v3/certs'
+)
 
 # Configure AWS S3 (if using)
 use_s3 = os.getenv('USE_S3', 'False').lower() in ('true', '1', 't')
@@ -630,18 +650,257 @@ def update_prompt(prompt_id):
         
     return redirect(url_for('dashboard'))
 
-# OAuth routes for Google and Apple
+# Replace the existing Google OAuth route with this
 @app.route('/auth/google')
 def google_auth():
-    # In a real implementation, this would redirect to Google OAuth
-    # For the demo, we'll just simulate a successful login
-    return render_template('oauth_callback.html', provider='Google')
+    redirect_uri = url_for('google_callback', _external=True)
+    return google.authorize_redirect(redirect_uri)
 
+@app.route('/auth/google/callback')
+def google_callback():
+    try:
+        token = google.authorize_access_token()
+        resp = google.get('userinfo')
+        user_info = resp.json()
+        
+        # Get user details from Google response
+        email = user_info['email']
+        name = user_info['name']
+        google_id = user_info['id']
+        
+        # Check if user exists
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        
+        if user:
+            # User exists, check if it's a Google login
+            if user['auth_type'] == 'google':
+                # Update the Google ID if needed
+                if user['auth_provider_id'] != google_id:
+                    cursor.execute(
+                        "UPDATE users SET auth_provider_id = %s WHERE id = %s",
+                        (google_id, user['id'])
+                    )
+                    conn.commit()
+                
+                # Log the user in
+                session['user_id'] = user['id']
+                session['full_name'] = user['full_name']
+                session['auth_type'] = 'google'
+                conn.close()
+                flash(f'Welcome back, {user["full_name"]}!', 'success')
+                return redirect(url_for('dashboard'))
+            else:
+                # User exists but with a different auth type
+                conn.close()
+                flash(f'An account with this email already exists. Please log in with {user["auth_type"].capitalize()}.', 'error')
+                return redirect(url_for('login'))
+        else:
+            # Create new user
+            cursor.execute(
+                "INSERT INTO users (full_name, email, auth_type, auth_provider_id) VALUES (%s, %s, %s, %s)",
+                (name, email, 'google', google_id)
+            )
+            conn.commit()
+            user_id = cursor.lastrowid
+            conn.close()
+            
+            # Log the user in
+            session['user_id'] = user_id
+            session['full_name'] = name
+            session['auth_type'] = 'google'
+            
+            flash(f'Welcome, {name}! Your account has been created.', 'success')
+            return redirect(url_for('dashboard'))
+            
+    except Exception as e:
+        print(f"Google OAuth error: {str(e)}")
+        flash('Authentication failed. Please try again.', 'error')
+        return redirect(url_for('login'))
+
+# Add the Apple OAuth configuration to app.py
 @app.route('/auth/apple')
 def apple_auth():
-    # In a real implementation, this would redirect to Apple OAuth
-    # For the demo, we'll just simulate a successful login
-    return render_template('oauth_callback.html', provider='Apple')
+    # Generate a random state string to prevent CSRF
+    state = secrets.token_urlsafe(32)
+    session['apple_auth_state'] = state
+    
+    # Configure the Apple Sign In request
+    apple_auth_url = "https://appleid.apple.com/auth/authorize"
+    
+    # Parameters for the authorization request
+    params = {
+        'response_type': 'code',
+        'client_id': os.getenv('APPLE_CLIENT_ID'),
+        'redirect_uri': url_for('apple_callback', _external=True),
+        'state': state,
+        'scope': 'name email',
+        'response_mode': 'form_post'
+    }
+    
+    # Build the URL with query parameters
+    auth_url = f"{apple_auth_url}?{'&'.join([f'{k}={v}' for k, v in params.items()])}"
+    
+    return redirect(auth_url)
+
+@app.route('/auth/apple/callback', methods=['POST'])
+def apple_callback():
+    try:
+        # Verify state to prevent CSRF attacks
+        if 'state' not in request.form or request.form.get('state') != session.pop('apple_auth_state', None):
+            flash('Invalid state parameter. Authentication failed.', 'error')
+            return redirect(url_for('login'))
+        
+        # Get the authorization code from Apple
+        code = request.form.get('code')
+        if not code:
+            flash('Authentication failed. No authorization code received.', 'error')
+            return redirect(url_for('login'))
+        
+        # Exchange the code for tokens
+        client_id = os.getenv('APPLE_CLIENT_ID')
+        client_secret = generate_apple_client_secret()  # Function to generate the client secret
+        
+        token_request_data = {
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'code': code,
+            'grant_type': 'authorization_code',
+            'redirect_uri': url_for('apple_callback', _external=True)
+        }
+        
+        token_response = requests.post('https://appleid.apple.com/auth/token', data=token_request_data)
+        token_data = token_response.json()
+        
+        if 'error' in token_data:
+            flash(f"Authentication failed: {token_data.get('error_description', token_data['error'])}", 'error')
+            return redirect(url_for('login'))
+        
+        # Get the ID token and decode it to get user information
+        id_token = token_data.get('id_token')
+        user_info = jwt.decode(id_token, '', options={"verify_signature": False})
+        
+        # Extract user information
+        apple_id = user_info.get('sub')
+        email = user_info.get('email')
+        
+        # The name might be included in the initial sign-in request but not in subsequent requests
+        # Check if user data is in the form
+        user_data = {}
+        if request.form.get('user'):
+            try:
+                user_data = json.loads(request.form.get('user'))
+            except:
+                pass
+        
+        # Get the name from user_data or use email as a fallback
+        name = None
+        if user_data and 'name' in user_data:
+            name_data = user_data['name']
+            first_name = name_data.get('firstName', '')
+            last_name = name_data.get('lastName', '')
+            name = f"{first_name} {last_name}".strip()
+        
+        if not name:
+            # Use email prefix as name if no name is provided
+            name = email.split('@')[0] if email else "Apple User"
+        
+        if not email:
+            flash('Authentication failed. Email information is required.', 'error')
+            return redirect(url_for('login'))
+        
+        # Check if user exists in database
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        
+        if user:
+            # User exists, check if it's an Apple login
+            if user['auth_type'] == 'apple':
+                # Update the Apple ID if needed
+                if user['auth_provider_id'] != apple_id:
+                    cursor.execute(
+                        "UPDATE users SET auth_provider_id = %s WHERE id = %s",
+                        (apple_id, user['id'])
+                    )
+                    conn.commit()
+                
+                # Log the user in
+                session['user_id'] = user['id']
+                session['full_name'] = user['full_name']
+                session['auth_type'] = 'apple'
+                conn.close()
+                flash(f'Welcome back, {user["full_name"]}!', 'success')
+                return redirect(url_for('dashboard'))
+            else:
+                # User exists but with a different auth type
+                conn.close()
+                flash(f'An account with this email already exists. Please log in with {user["auth_type"].capitalize()}.', 'error')
+                return redirect(url_for('login'))
+        else:
+            # Create new user
+            cursor.execute(
+                "INSERT INTO users (full_name, email, auth_type, auth_provider_id) VALUES (%s, %s, %s, %s)",
+                (name, email, 'apple', apple_id)
+            )
+            conn.commit()
+            user_id = cursor.lastrowid
+            conn.close()
+            
+            # Log the user in
+            session['user_id'] = user_id
+            session['full_name'] = name
+            session['auth_type'] = 'apple'
+            
+            flash(f'Welcome, {name}! Your account has been created.', 'success')
+            return redirect(url_for('dashboard'))
+        
+    except Exception as e:
+        print(f"Apple OAuth error: {str(e)}")
+        flash('Authentication failed. Please try again.', 'error')
+        return redirect(url_for('login'))
+
+# Function to generate the client secret for Apple Sign In
+def generate_apple_client_secret():
+    # Apple requires a JWT token signed with the private key as client secret
+    # This implementation needs your Apple private key in a .p8 file
+    
+    private_key_path = os.getenv('APPLE_PRIVATE_KEY_PATH')
+    team_id = os.getenv('APPLE_TEAM_ID')
+    client_id = os.getenv('APPLE_CLIENT_ID')
+    key_id = os.getenv('APPLE_KEY_ID')
+    
+    # Read the private key
+    with open(private_key_path, 'r') as f:
+        private_key = f.read()
+    
+    # Create JWT headers
+    headers = {
+        'kid': key_id
+    }
+    
+    # Create JWT payload
+    now = int(time.time())
+    payload = {
+        'iss': team_id,
+        'iat': now,
+        'exp': now + 3600,  # Valid for 1 hour
+        'aud': 'https://appleid.apple.com',
+        'sub': client_id
+    }
+    
+    # Create the JWT
+    client_secret = jwt.encode(
+        payload,
+        private_key,
+        algorithm='ES256',
+        headers=headers
+    )
+    
+    return client_secret
 
 @app.route('/auth/callback', methods=['POST'])
 def oauth_callback():
